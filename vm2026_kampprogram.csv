@@ -15,19 +15,19 @@ Kamp_nr,Runde,Dato,Tid_lokal,Tid_CEST,Hjemmelag,Bortelag,Stadion,By,Hjemme_oppse
 88,Sekstendelsfinale,03.jul.26,13:00,20:00,Nr. 2 gruppe D,Nr. 2 gruppe G,AT&T Stadium,Arlington,Nr. 2 gruppe D,Nr. 2 gruppe G
 86,Sekstendelsfinale,03.jul.26,18:00,00:00,Argentina,Nr. 2 gruppe H,Hard Rock Stadium,Miami Gardens,Nr. 1 gruppe J,Nr. 2 gruppe H
 87,Sekstendelsfinale,03.jul.26,20:30,03:30,Vinner gruppe K,Nr. 3 gruppe D/E/I/J/L,Arrowhead Stadium,Kansas City,Vinner gruppe K,Nr. 3 gruppe D/E/I/J/L
-90,Åttedelsfinale,04.jul.26,12:00,19:00,Vinner kamp 73,Vinner kamp 75,NRG Stadium,Houston,Vinner kamp 73,Vinner kamp 75
-89,Åttedelsfinale,04.jul.26,17:00,23:00,Vinner kamp 74,Vinner kamp 77,Lincoln Financial Field,Philadelphia,Vinner kamp 74,Vinner kamp 77
-91,Åttedelsfinale,05.jul.26,16:00,22:00,Vinner kamp 76,Vinner kamp 78,MetLife Stadium,East Rutherford,Vinner kamp 76,Vinner kamp 78
-92,Åttedelsfinale,05.jul.26,18:00,02:00,Vinner kamp 79,Vinner kamp 80,Estadio Azteca,Mexico by,Vinner kamp 79,Vinner kamp 80
-93,Åttedelsfinale,06.jul.26,14:00,21:00,Vinner kamp 83,Vinner kamp 84,AT&T Stadium,Arlington,Vinner kamp 83,Vinner kamp 84
-94,Åttedelsfinale,06.jul.26,17:00,02:00,Vinner kamp 81,Vinner kamp 82,Lumen Field,Seattle,Vinner kamp 81,Vinner kamp 82
-95,Åttedelsfinale,07.jul.26,12:00,18:00,Vinner kamp 86,Vinner kamp 88,Mercedes-Benz Stadium,Atlanta,Vinner kamp 86,Vinner kamp 88
-96,Åttedelsfinale,07.jul.26,13:00,22:00,Vinner kamp 85,Vinner kamp 87,BC Place,Vancouver,Vinner kamp 85,Vinner kamp 87
-97,Kvartfinale,09.jul.26,16:00,22:00,Vinner kamp 89,Vinner kamp 90,Gillette Stadium,Foxborough,Vinner kamp 89,Vinner kamp 90
-98,Kvartfinale,10.jul.26,12:00,21:00,Vinner kamp 93,Vinner kamp 94,SoFi Stadium,Inglewood,Vinner kamp 93,Vinner kamp 94
-99,Kvartfinale,11.jul.26,17:00,23:00,Vinner kamp 91,Vinner kamp 92,Hard Rock Stadium,Miami Gardens,Vinner kamp 91,Vinner kamp 92
-100,Kvartfinale,11.jul.26,20:00,03:00,Vinner kamp 95,Vinner kamp 96,Arrowhead Stadium,Kansas City,Vinner kamp 95,Vinner kamp 96
-101,Semifinale,14.jul.26,14:00,21:00,Vinner kamp 97,Vinner kamp 98,AT&T Stadium,Arlington,Vinner kamp 97,Vinner kamp 98
-102,Semifinale,15.jul.26,15:00,21:00,Vinner kamp 99,Vinner kamp 100,Mercedes-Benz Stadium,Atlanta,Vinner kamp 99,Vinner kamp 100
-103,Bronsefinale,18.jul.26,17:00,23:00,Taper kamp 101,Taper kamp 102,Hard Rock Stadium,Miami Gardens,Taper kamp 101,Taper kamp 102
-104,Finale,19.jul.26,15:00,21:00,Vinner kamp 101,Vinner kamp 102,MetLife Stadium,East Rutherford,Vinner kamp 101,Vinner kamp 102
+90,Åttedelsfinale,04.jul.26,12:00,19:00, , ,NRG Stadium,Houston,Vinner kamp 73,Vinner kamp 75
+89,Åttedelsfinale,04.jul.26,17:00,23:00, , ,Lincoln Financial Field,Philadelphia,Vinner kamp 74,Vinner kamp 77
+91,Åttedelsfinale,05.jul.26,16:00,22:00, , ,MetLife Stadium,East Rutherford,Vinner kamp 76,Vinner kamp 78
+92,Åttedelsfinale,05.jul.26,18:00,02:00, , ,Estadio Azteca,Mexico by,Vinner kamp 79,Vinner kamp 80
+93,Åttedelsfinale,06.jul.26,14:00,21:00, , ,AT&T Stadium,Arlington,Vinner kamp 83,Vinner kamp 84
+94,Åttedelsfinale,06.jul.26,17:00,02:00, , ,Lumen Field,Seattle,Vinner kamp 81,Vinner kamp 82
+95,Åttedelsfinale,07.jul.26,12:00,18:00, , ,Mercedes-Benz Stadium,Atlanta,Vinner kamp 86,Vinner kamp 88
+96,Åttedelsfinale,07.jul.26,13:00,22:00, , ,BC Place,Vancouver,Vinner kamp 85,Vinner kamp 87
+97,Kvartfinale,09.jul.26,16:00,22:00, , ,Gillette Stadium,Foxborough,Vinner kamp 89,Vinner kamp 90
+98,Kvartfinale,10.jul.26,12:00,21:00, , ,SoFi Stadium,Inglewood,Vinner kamp 93,Vinner kamp 94
+99,Kvartfinale,11.jul.26,17:00,23:00, , ,Hard Rock Stadium,Miami Gardens,Vinner kamp 91,Vinner kamp 92
+100,Kvartfinale,11.jul.26,20:00,03:00,, ,Arrowhead Stadium,Kansas City,Vinner kamp 95,Vinner kamp 96
+101,Semifinale,14.jul.26,14:00,21:00, , ,AT&T Stadium,Arlington,Vinner kamp 97,Vinner kamp 98
+102,Semifinale,15.jul.26,15:00,21:00, , ,Mercedes-Benz Stadium,Atlanta,Vinner kamp 99,Vinner kamp 100
+103,Bronsefinale,18.jul.26,17:00,23:00, , ,Hard Rock Stadium,Miami Gardens,Taper kamp 101,Taper kamp 102
+104,Finale,19.jul.26,15:00,21:00, , ,MetLife Stadium,East Rutherford,Vinner kamp 101,Vinner kamp 102

@@ -132,15 +132,16 @@
 
     .bcol-label { position: absolute; top: 0; font-size: 9px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; text-align: center; }
 
-    .bmatch { position: absolute; background: var(--surface); border: 1px solid var(--border); border-radius: 3px; overflow: hidden; transition: border-color 0.15s, background 0.15s; }
-    .bmatch:hover { background: var(--surface-hi); }
-    .bmatch-head { display: flex; justify-content: space-between; align-items: center; padding: 4px 8px; border-bottom: 1px solid var(--border); }
-    .bmatch-num { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
-    .bmatch-date { font-size: 9px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
-    .bmatch-body { padding: 5px 8px 6px; }
-    .bmatch-team { font-size: 11px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; }
-    .bmatch-team.away { color: var(--text-muted); }
-    .bmatch-vs { font-size: 8px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.1em; line-height: 1.2; }
+    .bmatch { position: absolute; background: #FFFFFF; border: 1px solid rgba(58, 142, 84, 0.24); border-radius: 6px; overflow: hidden; transition: border-color 0.15s, background 0.15s, transform 0.15s; box-shadow: 0 12px 24px rgba(18, 52, 33, 0.08); }
+    .bmatch:hover { background: #F7FFF8; border-color: rgba(58, 142, 84, 0.45); transform: translateY(-1px); }
+    .bmatch-head { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; border-bottom: 1px solid rgba(58, 142, 84, 0.14); }
+    .bmatch-num { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #2D6B38; }
+    .bmatch-date { font-size: 9px; color: #4D745E; font-variant-numeric: tabular-nums; }
+    .bmatch-body { padding: 10px 10px 10px; display: flex; flex-direction: column; gap: 4px; }
+    .bmatch-team { font-size: 11px; color: #0D1B13; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; }
+    .bmatch-team.away { color: #4D745E; }
+    .bmatch-foot { display: block; margin-top: 4px; font-size: 10px; color: #4D745E; letter-spacing: 0.08em; text-transform: uppercase; }
+    .bmatch-vs { display: none; }
 
     /* Oppsett toggle via CSS class */
     .bracket-canvas.show-oppsett .lagname { display: none; }
@@ -339,8 +340,7 @@
 
   /* ── Bracket view ── */
   function buildBracket(allMatches) {
-    const BOX_W = 152, BOX_H = 54, ROW_H = 72, COL_STEP = 176;
-    const X0 = 10, Y0 = 46;
+    const BOX_W = 180, BOX_H = 74, ROW_H = 86, COL_STEP = 200;
 
     // R32 bracket order top→bottom (paired by R16 match)
     const R32 = [74,77, 73,75, 83,84, 81,82, 76,78, 79,80, 86,88, 85,87];
@@ -420,13 +420,13 @@
       const bord = `rgba(${hexToRgb(col.color)},${isF?0.5:0.3})`;
       return `<div class="bmatch" style="left:${xOf(n)}px;top:${yOf(n)}px;width:${BOX_W}px;height:${BOX_H}px;${bg}border-color:${bord};">
         <div class="bmatch-head">
-          <span class="bmatch-num" style="color:${col.color}">Kamp ${n}</span>
+          <span class="bmatch-num" style="color:${col.color}">${m.Tid_CEST} CEST</span>
           <span class="bmatch-date">${fmtDateShort(m.Dato)}</span>
         </div>
         <div class="bmatch-body">
           <div class="bmatch-team"><span class="lagname">${m.Hjemmelag}</span><span class="oppsett">${m.Hjemme_oppsett||m.Hjemmelag}</span></div>
-          <div class="bmatch-vs">vs</div>
           <div class="bmatch-team away"><span class="lagname">${m.Bortelag}</span><span class="oppsett">${m.Borte_Oppsett||m.Bortelag}</span></div>
+          <span class="bmatch-foot">${m.By}</span>
         </div>
       </div>`;
     }
