@@ -24,14 +24,7 @@
 
     body {
       background-color: var(--bg);
-      background-image:
-        repeating-linear-gradient(
-          0deg,
-          transparent,
-          transparent 79px,
-          rgba(255, 255, 255, 0.012) 79px,
-          rgba(255, 255, 255, 0.012) 80px
-        );
+      background-image: repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(255,255,255,0.012) 79px, rgba(255,255,255,0.012) 80px);
       color: var(--text);
       font-family: var(--font-sans);
       line-height: 1.5;
@@ -39,478 +32,138 @@
     }
 
     /* ── Header ── */
-    .site-header {
-      position: relative;
-      padding: 64px 48px 56px;
-      text-align: center;
-      overflow: hidden;
-      border-bottom: 1px solid var(--border);
-    }
+    .site-header { position: relative; padding: 64px 48px 56px; text-align: center; overflow: hidden; border-bottom: 1px solid var(--border); }
+    .header-bg-year { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--font-serif); font-size: clamp(160px,26vw,320px); font-weight: normal; color: rgba(255,255,255,0.025); letter-spacing: -0.04em; pointer-events: none; user-select: none; line-height: 1; }
+    .header-content { position: relative; }
+    .header-eyebrow { font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 20px; }
+    .header-title { font-family: var(--font-serif); font-size: clamp(60px,11vw,128px); font-weight: normal; letter-spacing: -0.02em; line-height: 0.88; color: var(--text); }
+    .header-title em { font-style: normal; color: var(--gold); }
+    .header-rule { display: flex; align-items: center; justify-content: center; gap: 16px; margin: 28px auto 20px; }
+    .header-rule-line { width: 48px; height: 1px; background: var(--gold); opacity: 0.5; }
+    .header-rule-dot  { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); }
+    .header-subtitle { font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); }
 
-    .header-bg-year {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-serif);
-      font-size: clamp(160px, 26vw, 320px);
-      font-weight: normal;
-      color: rgba(255, 255, 255, 0.025);
-      letter-spacing: -0.04em;
-      pointer-events: none;
-      user-select: none;
-      line-height: 1;
-    }
-
-    .header-content {
-      position: relative;
-    }
-
-    .header-eyebrow {
-      font-size: 11px;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: var(--gold);
-      font-weight: 600;
-      margin-bottom: 20px;
-    }
-
-    .header-title {
-      font-family: var(--font-serif);
-      font-size: clamp(60px, 11vw, 128px);
-      font-weight: normal;
-      letter-spacing: -0.02em;
-      line-height: 0.88;
-      color: var(--text);
-    }
-
-    .header-title em {
-      font-style: normal;
-      color: var(--gold);
-    }
-
-    .header-rule {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      margin: 28px auto 20px;
-    }
-
-    .header-rule-line {
-      width: 48px;
-      height: 1px;
-      background: var(--gold);
-      opacity: 0.5;
-    }
-
-    .header-rule-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--gold);
-    }
-
-    .header-subtitle {
-      font-size: 12px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-    }
-
-    /* ── Round navigation ── */
+    /* ── Nav ── */
     .round-nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(4, 16, 30, 0.94);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(4,16,30,0.94);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
-      display: flex;
-      overflow-x: auto;
-      scrollbar-width: none;
+      display: flex; align-items: stretch;
       padding: 0 48px;
     }
-
-    .round-nav::-webkit-scrollbar { display: none; }
-
-    .nav-link {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      padding: 13px 18px;
-      text-decoration: none;
-      border-bottom: 2px solid transparent;
-      transition: background 0.15s, border-color 0.2s;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .nav-link:hover { background: rgba(255, 255, 255, 0.04); }
-    .nav-link:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
-
+    #round-nav-links { display: flex; overflow-x: auto; scrollbar-width: none; flex: 1; }
+    #round-nav-links::-webkit-scrollbar { display: none; }
+    .nav-link { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 13px 18px; text-decoration: none; border-bottom: 2px solid transparent; transition: background 0.15s, border-color 0.2s; white-space: nowrap; flex-shrink: 0; }
+    .nav-link:hover { background: rgba(255,255,255,0.04); }
     .nav-link.active { border-bottom-color: var(--gold); }
     .nav-link.active .nav-badge { opacity: 1; }
+    .nav-badge { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; opacity: 0.7; transition: opacity 0.2s; }
+    .nav-label { font-size: 11px; color: var(--text-muted); }
 
-    .nav-badge {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      opacity: 0.7;
-      transition: opacity 0.2s;
-    }
+    /* ── View switcher ── */
+    .view-switcher { display: flex; align-items: center; gap: 4px; padding: 10px 0 10px 16px; border-left: 1px solid var(--border); flex-shrink: 0; margin-left: 8px; }
+    .view-btn { display: flex; align-items: center; gap: 5px; padding: 5px 11px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); font-size: 10px; font-family: var(--font-sans); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600; cursor: pointer; border-radius: 2px; transition: all 0.15s; white-space: nowrap; }
+    .view-btn:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+    .view-btn.active { background: var(--gold-dim); color: var(--gold); border-color: rgba(201,168,76,0.3); }
 
-    .nav-label {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
+    /* ── Main ── */
+    .main { max-width: 1440px; margin: 0 auto; padding: 0 48px 100px; }
 
-    /* ── Main content ── */
-    .main {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 0 48px 100px;
-    }
-
-    /* ── Progress bar ── */
-    .tournament-ladder {
-      display: flex;
-      align-items: center;
-      gap: 0;
-      padding: 36px 0 0;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-
+    /* ── Ladder ── */
+    .tournament-ladder { display: flex; align-items: center; padding: 36px 0 0; overflow-x: auto; scrollbar-width: none; }
     .tournament-ladder::-webkit-scrollbar { display: none; }
-
-    .ladder-step {
-      display: flex;
-      align-items: center;
-      gap: 0;
-      flex-shrink: 0;
-    }
-
-    .ladder-node {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      text-decoration: none;
-      padding: 8px 12px;
-      border-radius: 3px;
-      transition: background 0.15s;
-    }
-
+    .ladder-step { display: flex; align-items: center; flex-shrink: 0; }
+    .ladder-node { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; text-decoration: none; padding: 8px 12px; border-radius: 3px; transition: background 0.15s; }
     .ladder-node:hover { background: rgba(255,255,255,0.04); }
-
-    .ladder-count {
-      font-family: var(--font-serif);
-      font-size: 22px;
-      font-weight: normal;
-      line-height: 1;
-    }
-
-    .ladder-label {
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      text-align: center;
-    }
-
-    .ladder-arrow {
-      display: flex;
-      align-items: center;
-      padding: 0 8px;
-      padding-bottom: 22px;
-    }
-
-    .ladder-arrow svg {
-      color: var(--border);
-    }
+    .ladder-count { font-family: var(--font-serif); font-size: 22px; font-weight: normal; line-height: 1; }
+    .ladder-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); text-align: center; }
+    .ladder-arrow { display: flex; align-items: center; padding: 0 8px; padding-bottom: 22px; }
+    .ladder-arrow svg { color: var(--border); }
 
     /* ── Round sections ── */
-    .round-section {
-      padding-top: 80px;
-    }
-
-    .round-header {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 36px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--border);
-    }
-
+    .round-section { padding-top: 80px; }
+    .round-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 36px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
     .round-header-left { flex: 1; min-width: 0; }
-
-    .round-eyebrow {
-      font-size: 10px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .round-title {
-      font-family: var(--font-serif);
-      font-size: clamp(28px, 5vw, 54px);
-      font-weight: normal;
-      letter-spacing: -0.015em;
-      line-height: 1;
-      color: var(--text);
-      text-wrap: balance;
-    }
-
-    .round-meta {
-      font-size: 12px;
-      color: var(--text-muted);
-      text-align: right;
-      white-space: nowrap;
-    }
-
-    .round-meta-count {
-      font-size: 32px;
-      font-family: var(--font-serif);
-      display: block;
-      color: var(--text);
-      line-height: 1;
-      font-variant-numeric: tabular-nums;
-    }
-
-    /* ── Match grid ── */
-    .match-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-      gap: 12px;
-    }
+    .round-eyebrow { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
+    .round-title { font-family: var(--font-serif); font-size: clamp(28px,5vw,54px); font-weight: normal; letter-spacing: -0.015em; line-height: 1; color: var(--text); text-wrap: balance; }
+    .round-meta { font-size: 12px; color: var(--text-muted); text-align: right; white-space: nowrap; }
+    .round-meta-count { font-size: 32px; font-family: var(--font-serif); display: block; color: var(--text); line-height: 1; font-variant-numeric: tabular-nums; }
+    .match-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px,1fr)); gap: 12px; }
 
     /* ── Match card ── */
-    .match-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      overflow: hidden;
-      transition: background 0.15s, border-color 0.2s, transform 0.15s;
-      display: flex;
-      flex-direction: column;
-    }
+    .match-card { background: var(--surface); border: 1px solid var(--border); border-radius: 3px; overflow: hidden; transition: background 0.15s, border-color 0.2s, transform 0.15s; display: flex; flex-direction: column; }
+    .match-card:hover { background: var(--surface-hi); border-color: rgba(201,168,76,0.22); transform: translateY(-2px); }
+    .card-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+    .card-match-num { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+    .card-date { font-size: 11px; color: var(--text-muted); letter-spacing: 0.04em; font-variant-numeric: tabular-nums; }
+    .card-body { padding: 18px 14px 16px; flex: 1; }
+    .team-name { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.3; }
+    .vs-row { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
+    .vs-rule { flex: 1; height: 1px; background: var(--border); }
+    .vs-text { font-size: 9px; font-weight: 700; letter-spacing: 0.2em; color: var(--text-muted); }
+    .card-footer { display: flex; justify-content: space-between; align-items: flex-end; padding: 10px 14px; border-top: 1px solid var(--border); gap: 8px; }
+    .venue { min-width: 0; }
+    .venue-name { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .venue-city { font-size: 10px; color: var(--text-muted); opacity: 0.6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .times { text-align: right; flex-shrink: 0; }
+    .time-local { font-size: 14px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1.2; }
+    .time-cest { font-size: 10px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .section-finale .match-card { background: linear-gradient(145deg,#0F2240,#0C1C35); border-color: rgba(201,168,76,0.25); }
+    .section-finale .match-card:hover { border-color: rgba(201,168,76,0.5); background: linear-gradient(145deg,#142D52,#102540); }
+    .section-finale .team-name { font-size: 16px; }
 
-    .match-card:hover {
-      background: var(--surface-hi);
-      border-color: rgba(201, 168, 76, 0.22);
-      transform: translateY(-2px);
-    }
+    /* ── Bracket view ── */
+    .bracket-outer { padding: 32px 0 100px; display: none; }
 
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 14px;
+    .bracket-mode-bar {
+      display: flex; align-items: center; gap: 6px;
+      margin-bottom: 20px; padding-bottom: 16px;
       border-bottom: 1px solid var(--border);
     }
+    .bracket-mode-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin-right: 4px; }
+    .mode-btn { padding: 5px 12px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); font-size: 10px; font-family: var(--font-sans); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; cursor: pointer; border-radius: 2px; transition: all 0.15s; }
+    .mode-btn:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+    .mode-btn.active { background: var(--gold-dim); color: var(--gold); border-color: rgba(201,168,76,0.3); }
 
-    .card-match-num {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
+    .bracket-scroll { overflow-x: auto; overflow-y: visible; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent; padding-bottom: 16px; }
+    .bracket-canvas { position: relative; }
+    .bracket-canvas svg { position: absolute; top: 0; left: 0; pointer-events: none; overflow: visible; }
 
-    .card-date {
-      font-size: 11px;
-      color: var(--text-muted);
-      letter-spacing: 0.04em;
-      font-variant-numeric: tabular-nums;
-    }
+    .bcol-label { position: absolute; top: 0; font-size: 9px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; text-align: center; }
 
-    .card-body {
-      padding: 18px 14px 16px;
-      flex: 1;
-    }
+    .bmatch { position: absolute; background: var(--surface); border: 1px solid var(--border); border-radius: 3px; overflow: hidden; transition: border-color 0.15s, background 0.15s; }
+    .bmatch:hover { background: var(--surface-hi); }
+    .bmatch-head { display: flex; justify-content: space-between; align-items: center; padding: 4px 8px; border-bottom: 1px solid var(--border); }
+    .bmatch-num { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+    .bmatch-date { font-size: 9px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .bmatch-body { padding: 5px 8px 6px; }
+    .bmatch-team { font-size: 11px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; }
+    .bmatch-team.away { color: var(--text-muted); }
+    .bmatch-vs { font-size: 8px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.1em; line-height: 1.2; }
 
-    .team-name {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text);
-      line-height: 1.3;
-    }
+    /* Oppsett toggle via CSS class */
+    .bracket-canvas.show-oppsett .lagname { display: none; }
+    .bracket-canvas.show-oppsett .oppsett { display: inline; }
+    .bracket-canvas:not(.show-oppsett) .lagname { display: inline; }
+    .bracket-canvas:not(.show-oppsett) .oppsett { display: none; }
 
-    .vs-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 10px 0;
-    }
-
-    .vs-rule {
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-
-    .vs-text {
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      color: var(--text-muted);
-    }
-
-    .card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      padding: 10px 14px;
-      border-top: 1px solid var(--border);
-      gap: 8px;
-    }
-
-    .venue {
-      min-width: 0;
-    }
-
-    .venue-name {
-      font-size: 11px;
-      color: var(--text-muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .venue-city {
-      font-size: 10px;
-      color: var(--text-muted);
-      opacity: 0.6;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .times {
-      text-align: right;
-      flex-shrink: 0;
-    }
-
-    .time-local {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text);
-      font-variant-numeric: tabular-nums;
-      line-height: 1.2;
-    }
-
-    .time-cest {
-      font-size: 10px;
-      color: var(--text-muted);
-      font-variant-numeric: tabular-nums;
-    }
-
-    /* ── Finale special treatment ── */
-    .section-finale .match-card {
-      background: linear-gradient(145deg, #0F2240, #0C1C35);
-      border-color: rgba(201, 168, 76, 0.25);
-    }
-
-    .section-finale .match-card:hover {
-      border-color: rgba(201, 168, 76, 0.5);
-      background: linear-gradient(145deg, #142D52, #102540);
-    }
-
-    .section-finale .team-name {
-      font-size: 16px;
-    }
-
-    /* ── Error / loading states ── */
-    .state-panel {
-      padding: 80px 48px;
-      text-align: center;
-    }
-
-    .state-title {
-      font-family: var(--font-serif);
-      font-size: 32px;
-      font-weight: normal;
-      color: var(--text);
-      margin-bottom: 16px;
-    }
-
-    .state-body {
-      font-size: 15px;
-      color: var(--text-muted);
-      line-height: 1.75;
-      max-width: 520px;
-      margin: 0 auto;
-    }
-
-    .state-code {
-      display: inline-block;
-      margin-top: 28px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 14px 24px;
-      border-radius: 3px;
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 13px;
-      color: var(--gold);
-      letter-spacing: 0.04em;
-    }
-
-    .state-note {
-      margin-top: 16px;
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-
-    .loading-dots {
-      display: inline-flex;
-      gap: 6px;
-      margin-top: 4px;
-    }
-
-    .loading-dots span {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--text-muted);
-      animation: dot-pulse 1.4s ease-in-out infinite;
-    }
-
+    /* ── State / loading ── */
+    .state-panel { padding: 80px 48px; text-align: center; }
+    .state-title { font-family: var(--font-serif); font-size: 32px; font-weight: normal; color: var(--text); margin-bottom: 16px; }
+    .state-body { font-size: 15px; color: var(--text-muted); line-height: 1.75; max-width: 520px; margin: 0 auto; }
+    .state-code { display: inline-block; margin-top: 28px; background: var(--surface); border: 1px solid var(--border); padding: 14px 24px; border-radius: 3px; font-family: 'Courier New',Courier,monospace; font-size: 13px; color: var(--gold); letter-spacing: 0.04em; }
+    .state-note { margin-top: 16px; font-size: 13px; color: var(--text-muted); }
+    .loading-dots { display: inline-flex; gap: 6px; margin-top: 4px; }
+    .loading-dots span { width: 5px; height: 5px; border-radius: 50%; background: var(--text-muted); animation: dot-pulse 1.4s ease-in-out infinite; }
     .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
     .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
-
-    @keyframes dot-pulse {
-      0%, 80%, 100% { opacity: 0.25; transform: scale(0.8); }
-      40% { opacity: 1; transform: scale(1); }
-    }
+    @keyframes dot-pulse { 0%,80%,100% { opacity: 0.25; transform: scale(0.8); } 40% { opacity: 1; transform: scale(1); } }
 
     /* ── Responsive ── */
-    @media (max-width: 900px) {
-      .site-header { padding: 48px 24px 44px; }
-      .round-nav   { padding: 0 24px; }
-      .main        { padding: 0 24px 80px; }
-    }
-
-    @media (max-width: 600px) {
-      .site-header { padding: 40px 16px 36px; }
-      .round-nav   { padding: 0 16px; }
-      .main        { padding: 0 16px 60px; }
-      .nav-link    { padding: 12px 12px; }
-      .match-grid  { grid-template-columns: 1fr; }
-      .round-header { flex-direction: column; align-items: flex-start; gap: 8px; }
-      .round-meta  { text-align: left; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .match-card { transition: none; }
-      .loading-dots span { animation: none; opacity: 1; }
-    }
+    @media (max-width: 900px) { .site-header { padding: 48px 24px 44px; } .round-nav { padding: 0 24px; } .main { padding: 0 24px 80px; } }
+    @media (max-width: 600px) { .site-header { padding: 40px 16px 36px; } .round-nav { padding: 0 16px; } .main { padding: 0 16px 60px; } .nav-link { padding: 12px; } .match-grid { grid-template-columns: 1fr; } .round-header { flex-direction: column; align-items: flex-start; gap: 8px; } .round-meta { text-align: left; } .view-switcher { padding-left: 8px; } }
+    @media (prefers-reduced-motion: reduce) { .match-card, .bmatch { transition: none; } .loading-dots span { animation: none; opacity: 1; } }
   </style>
 </head>
 <body>
@@ -521,22 +174,41 @@
     <p class="header-eyebrow">FIFA Verdensmesterskap &nbsp;·&nbsp; USA · Canada · Mexico</p>
     <h1 class="header-title">VM <em>2026</em></h1>
     <div class="header-rule" aria-hidden="true">
-      <div class="header-rule-line"></div>
-      <div class="header-rule-dot"></div>
-      <div class="header-rule-line"></div>
+      <div class="header-rule-line"></div><div class="header-rule-dot"></div><div class="header-rule-line"></div>
     </div>
     <p class="header-subtitle">Kampprogram · Sluttspill</p>
   </div>
 </header>
 
-<nav class="round-nav" id="round-nav" aria-label="Runder"></nav>
+<nav class="round-nav" aria-label="Navigasjon">
+  <div id="round-nav-links"></div>
+  <div class="view-switcher">
+    <button class="view-btn active" id="btn-card" aria-pressed="true" title="Kortvisning">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+        <rect x="0.5" y="0.5" width="5" height="5" rx="0.5" stroke="currentColor" stroke-width="1.2"/>
+        <rect x="7.5" y="0.5" width="5" height="5" rx="0.5" stroke="currentColor" stroke-width="1.2"/>
+        <rect x="0.5" y="7.5" width="5" height="5" rx="0.5" stroke="currentColor" stroke-width="1.2"/>
+        <rect x="7.5" y="7.5" width="5" height="5" rx="0.5" stroke="currentColor" stroke-width="1.2"/>
+      </svg>
+      Kort
+    </button>
+    <button class="view-btn" id="btn-tree" aria-pressed="false" title="Bracket">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+        <rect x="1" y="1" width="4" height="3" rx="0.5" stroke="currentColor" stroke-width="1.1"/>
+        <rect x="1" y="9" width="4" height="3" rx="0.5" stroke="currentColor" stroke-width="1.1"/>
+        <rect x="8" y="5" width="4" height="3" rx="0.5" stroke="currentColor" stroke-width="1.1"/>
+        <path d="M5 2.5h1.5v8H5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M6.5 6.5H8" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+      </svg>
+      Tre
+    </button>
+  </div>
+</nav>
 
 <main class="main" id="main">
   <div class="state-panel">
     <p class="state-title">Laster kampprogram</p>
-    <div class="loading-dots" aria-label="Laster…">
-      <span></span><span></span><span></span>
-    </div>
+    <div class="loading-dots" aria-label="Laster…"><span></span><span></span><span></span></div>
   </div>
 </main>
 
@@ -550,187 +222,323 @@
     'Finale':            { short: 'F',   color: '#C9A84C', order: 6 },
   };
 
-  const MONTHS = {
-    'januar':'jan','februar':'feb','mars':'mar','april':'apr','mai':'mai',
-    'juni':'jun','juli':'jul','august':'aug','september':'sep',
-    'oktober':'okt','november':'nov','desember':'des'
-  };
+  const MONTHS = { 'januar':'jan','februar':'feb','mars':'mar','april':'apr','mai':'mai','juni':'jun','juli':'jul','august':'aug','september':'sep','oktober':'okt','november':'nov','desember':'des' };
 
   function parseCSV(raw) {
     const [headerLine, ...rows] = raw.trim().split('\n');
     const headers = headerLine.split(',').map(h => h.trim());
-    return rows
-      .filter(r => r.trim())
-      .map(row => {
-        const cols = row.split(',').map(c => c.trim());
-        return Object.fromEntries(headers.map((h, i) => [h, cols[i] ?? '']));
-      });
+    return rows.filter(r => r.trim()).map(row => {
+      const cols = row.split(',').map(c => c.trim());
+      return Object.fromEntries(headers.map((h, i) => [h, cols[i] ?? '']));
+    });
   }
 
   function groupByRound(matches) {
     const map = {};
-    matches.forEach(m => {
-      (map[m.Runde] = map[m.Runde] || []).push(m);
-    });
+    matches.forEach(m => { (map[m.Runde] = map[m.Runde] || []).push(m); });
     return map;
   }
 
   function sortedRounds(groups) {
-    return Object.keys(groups).sort((a, b) =>
-      (ROUNDS[a]?.order ?? 99) - (ROUNDS[b]?.order ?? 99)
-    );
+    return Object.keys(groups).sort((a, b) => (ROUNDS[a]?.order ?? 99) - (ROUNDS[b]?.order ?? 99));
   }
 
+  // Handles both "28.jun.26" and "28. juni 2026"
   function fmtDate(d) {
+    if (!d) return '';
+    if (/^\d+\.[a-z]+\.\d+$/i.test(d)) {
+      const [day, mon, yr] = d.split('.');
+      return `${parseInt(day)} ${mon} 20${yr}`;
+    }
     const [day, , month, , year] = d.split(' ');
     return `${day} ${MONTHS[month] || month} ${year}`;
   }
 
+  function fmtDateShort(d) {
+    if (!d) return '';
+    if (/^\d+\.[a-z]+\.\d+$/i.test(d)) {
+      const [day, mon] = d.split('.');
+      return `${parseInt(day)}.${mon}`;
+    }
+    const [day, , month] = d.split(' ');
+    return `${day} ${MONTHS[month] || month}`;
+  }
+
+  function hexToRgb(hex) {
+    const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    return `${r},${g},${b}`;
+  }
+
+  function encodeRound(r) {
+    return 'round-' + r.replace(/å/g,'a').replace(/æ/g,'ae').replace(/ø/g,'o').replace(/\s+/g,'-').toLowerCase();
+  }
+
   function buildNav(rounds) {
     return rounds.map(r => {
-      const cfg = ROUNDS[r] || { short: '?', color: '#666' };
-      const id = encodeRound(r);
-      return `
-        <a class="nav-link" href="#${id}" data-round="${r}" aria-label="${r}">
-          <span class="nav-badge" style="color:${cfg.color}">${cfg.short}</span>
-          <span class="nav-label">${r}</span>
-        </a>`;
+      const cfg = ROUNDS[r] || { short:'?', color:'#666' };
+      return `<a class="nav-link" href="#${encodeRound(r)}" data-round="${r}" aria-label="${r}">
+        <span class="nav-badge" style="color:${cfg.color}">${cfg.short}</span>
+        <span class="nav-label">${r}</span></a>`;
     }).join('');
   }
 
   function buildLadder(rounds, groups) {
-    return `<div class="tournament-ladder">` +
+    return '<div class="tournament-ladder">' +
       rounds.map((r, i) => {
-        const cfg = ROUNDS[r] || { short: '?', color: '#666' };
-        const count = groups[r].length;
-        const arrow = i < rounds.length - 1
+        const cfg = ROUNDS[r] || { short:'?', color:'#666' };
+        const arrow = i < rounds.length-1
           ? `<div class="ladder-arrow"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`
           : '';
-        return `
-          <div class="ladder-step">
-            <a class="ladder-node" href="#${encodeRound(r)}" aria-label="${r}">
-              <span class="ladder-count" style="color:${cfg.color}">${count}</span>
-              <span class="ladder-label">${cfg.short}</span>
-            </a>
-            ${arrow}
-          </div>`;
-      }).join('') +
-    `</div>`;
+        return `<div class="ladder-step"><a class="ladder-node" href="#${encodeRound(r)}">
+          <span class="ladder-count" style="color:${cfg.color}">${groups[r].length}</span>
+          <span class="ladder-label">${cfg.short}</span></a>${arrow}</div>`;
+      }).join('') + '</div>';
   }
 
   function buildCard(m) {
-    const cfg = ROUNDS[m.Runde] || { color: '#888' };
-    return `
-      <article class="match-card">
-        <div class="card-header">
-          <span class="card-match-num" style="color:${cfg.color}">Kamp ${m.Kamp_nr}</span>
-          <span class="card-date">${fmtDate(m.Dato)}</span>
+    const cfg = ROUNDS[m.Runde] || { color:'#888' };
+    return `<article class="match-card">
+      <div class="card-header">
+        <span class="card-match-num" style="color:${cfg.color}">Kamp ${m.Kamp_nr}</span>
+        <span class="card-date">${fmtDate(m.Dato)}</span>
+      </div>
+      <div class="card-body">
+        <div class="team-name">${m.Hjemmelag}</div>
+        <div class="vs-row"><div class="vs-rule"></div><span class="vs-text">vs</span><div class="vs-rule"></div></div>
+        <div class="team-name">${m.Bortelag}</div>
+      </div>
+      <div class="card-footer">
+        <div class="venue">
+          <div class="venue-name">${m.Stadion}</div>
+          <div class="venue-city">${m.By}</div>
         </div>
-        <div class="card-body">
-          <div class="team-name">${m.Hjemmelag}</div>
-          <div class="vs-row">
-            <div class="vs-rule"></div>
-            <span class="vs-text">vs</span>
-            <div class="vs-rule"></div>
-          </div>
-          <div class="team-name">${m.Bortelag}</div>
+        <div class="times">
+          <div class="time-local">${m.Tid_CEST}</div>
+          <div class="time-cest">${m.Tid_lokal} lokal</div>
         </div>
-        <div class="card-footer">
-          <div class="venue">
-            <div class="venue-name">${m.Stadion}</div>
-            <div class="venue-city">${m.By}</div>
-          </div>
-          <div class="times">
-            <div class="time-local">${m.Tid_lokal}</div>
-            <div class="time-cest">${m.Tid_CEST} CEST</div>
-          </div>
-        </div>
-      </article>`;
+      </div></article>`;
   }
 
   function buildSection(round, matches) {
-    const cfg = ROUNDS[round] || { color: '#888', short: '?' };
-    const isFinale = round === 'Finale';
-    const cls = isFinale ? ' section-finale' : '';
-    return `
-      <section class="round-section${cls}" id="${encodeRound(round)}">
-        <div class="round-header">
-          <div class="round-header-left">
-            <div class="round-eyebrow" style="color:${cfg.color}">${cfg.short} &nbsp;·&nbsp; ${round}</div>
-            <h2 class="round-title">${round}</h2>
-          </div>
-          <div class="round-meta">
-            <span class="round-meta-count">${matches.length}</span>
-            ${matches.length === 1 ? 'kamp' : 'kamper'}
-          </div>
+    const cfg = ROUNDS[round] || { color:'#888', short:'?' };
+    const cls = round === 'Finale' ? ' section-finale' : '';
+    return `<section class="round-section${cls}" id="${encodeRound(round)}">
+      <div class="round-header">
+        <div class="round-header-left">
+          <div class="round-eyebrow" style="color:${cfg.color}">${cfg.short} &nbsp;·&nbsp; ${round}</div>
+          <h2 class="round-title">${round}</h2>
         </div>
-        <div class="match-grid">
-          ${matches.map(buildCard).join('')}
+        <div class="round-meta">
+          <span class="round-meta-count">${matches.length}</span>
+          ${matches.length === 1 ? 'kamp' : 'kamper'}
         </div>
-      </section>`;
+      </div>
+      <div class="match-grid">${matches.map(buildCard).join('')}</div>
+    </section>`;
   }
 
-  function encodeRound(r) {
-    return 'round-' + r
-      .replace(/å/g,'a').replace(/æ/g,'ae').replace(/ø/g,'o')
-      .replace(/\s+/g, '-').toLowerCase();
-  }
+  /* ── Bracket view ── */
+  function buildBracket(allMatches) {
+    const BOX_W = 152, BOX_H = 54, ROW_H = 72, COL_STEP = 176;
+    const X0 = 10, Y0 = 46;
 
-  function showError(msg) {
-    document.getElementById('main').innerHTML = `
-      <div class="state-panel">
-        <h2 class="state-title">Kan ikke laste kampprogram</h2>
-        <p class="state-body">
-          HTML-filen henter data fra <strong>vm2026_kampprogram.csv</strong>.
-          Åpne filene via en lokal webserver – det fungerer ikke å åpne HTML-filen
-          direkte fra filutforskeren.
-        </p>
-        <div class="state-code">python3 -m http.server 8080</div>
-        <p class="state-note">
-          Åpne deretter <strong>http://localhost:8080/vm2026.html</strong> i nettleseren.
-        </p>
+    // R32 bracket order top→bottom (paired by R16 match)
+    const R32 = [74,77, 73,75, 83,84, 81,82, 76,78, 79,80, 86,88, 85,87];
+
+    const mmap = {};
+    allMatches.forEach(m => { mmap[+m.Kamp_nr] = m; });
+
+    // Center-y for each match number
+    const cy = {};
+    R32.forEach((n, i) => { cy[n] = Y0 + i * ROW_H + BOX_H / 2; });
+
+    function mid(a, b) { return (cy[a] + cy[b]) / 2; }
+
+    [[89,74,77],[90,73,75],[93,83,84],[94,81,82],[91,76,78],[92,79,80],[95,86,88],[96,85,87]]
+      .forEach(([n,a,b]) => { cy[n] = mid(a,b); });
+    [[97,89,90],[98,93,94],[99,91,92],[100,95,96]]
+      .forEach(([n,a,b]) => { cy[n] = mid(a,b); });
+    [[101,97,98],[102,99,100]]
+      .forEach(([n,a,b]) => { cy[n] = mid(a,b); });
+    cy[104] = mid(101,102);
+    cy[103] = cy[104] + BOX_H + 38;
+
+    const R16 = [89,90,93,94,91,92,95,96];
+    const QF  = [97,98,99,100];
+    const SF  = [101,102];
+
+    function colOf(n) {
+      if (R32.includes(n)) return 0;
+      if (R16.includes(n)) return 1;
+      if (QF.includes(n))  return 2;
+      if (SF.includes(n))  return 3;
+      return 4;
+    }
+    function xOf(n) { return X0 + colOf(n) * COL_STEP; }
+    function yOf(n) { return cy[n] - BOX_H / 2; }
+
+    const COLS = [
+      { label:'Sekstendelsfinale', color:'#5B8DB8' },
+      { label:'Åttedelsfinale',    color:'#4A9E85' },
+      { label:'Kvartfinale',       color:'#C9A84C' },
+      { label:'Semifinale',        color:'#D97B3A' },
+      { label:'Finale',            color:'#C9A84C' },
+    ];
+
+    const ALL = [...R32, ...R16, ...QF, ...SF, 104, 103];
+    const canvasW = X0 + 4 * COL_STEP + BOX_W + X0;
+    const canvasH = Math.max(...ALL.map(n => yOf(n) + BOX_H)) + 40;
+
+    const EDGES = [
+      [74,89],[77,89],[73,90],[75,90],
+      [83,93],[84,93],[81,94],[82,94],
+      [76,91],[78,91],[79,92],[80,92],
+      [86,95],[88,95],[85,96],[87,96],
+      [89,97],[90,97],[93,98],[94,98],
+      [91,99],[92,99],[95,100],[96,100],
+      [97,101],[98,101],[99,102],[100,102],
+      [101,104],[102,104],
+      [101,103],[102,103],
+    ];
+
+    function svgPath(from, to) {
+      const x1 = xOf(from) + BOX_W, y1 = cy[from];
+      const x2 = xOf(to),           y2 = cy[to];
+      const mx = (x1 + x2) / 2;
+      const isThird = to === 103;
+      const color = to === 104 ? '#C9A84C' : isThird ? '#9E7B5A' : '#2D4D6B';
+      const dash = isThird ? ' stroke-dasharray="4 3"' : '';
+      return `<path d="M${x1},${y1} L${mx},${y1} L${mx},${y2} L${x2},${y2}" fill="none" stroke="${color}" stroke-width="${to===104?2:1.5}"${dash}/>`;
+    }
+
+    function renderMatch(n) {
+      const m = mmap[n];
+      if (!m) return '';
+      const col = COLS[colOf(n)];
+      const isF = n === 104;
+      const bg = isF ? 'background:linear-gradient(135deg,#0F2240,#0C1C35);' : '';
+      const bord = `rgba(${hexToRgb(col.color)},${isF?0.5:0.3})`;
+      return `<div class="bmatch" style="left:${xOf(n)}px;top:${yOf(n)}px;width:${BOX_W}px;height:${BOX_H}px;${bg}border-color:${bord};">
+        <div class="bmatch-head">
+          <span class="bmatch-num" style="color:${col.color}">Kamp ${n}</span>
+          <span class="bmatch-date">${fmtDateShort(m.Dato)}</span>
+        </div>
+        <div class="bmatch-body">
+          <div class="bmatch-team"><span class="lagname">${m.Hjemmelag}</span><span class="oppsett">${m.Hjemme_oppsett||m.Hjemmelag}</span></div>
+          <div class="bmatch-vs">vs</div>
+          <div class="bmatch-team away"><span class="lagname">${m.Bortelag}</span><span class="oppsett">${m.Borte_Oppsett||m.Bortelag}</span></div>
+        </div>
       </div>`;
+    }
+
+    const colLabels = COLS.map((c,i) =>
+      `<div class="bcol-label" style="left:${X0+i*COL_STEP}px;width:${BOX_W}px;color:${c.color};">${c.label}</div>`
+    ).join('');
+
+    const svgPaths = EDGES.map(([f,t]) => svgPath(f,t)).join('');
+    const matchBoxes = ALL.map(renderMatch).join('');
+
+    return `<div class="bracket-outer" id="bracket-outer">
+      <div class="bracket-mode-bar">
+        <span class="bracket-mode-label">Lagvisning:</span>
+        <button class="mode-btn active" id="btn-lagopp">Hjemme / Borte</button>
+        <button class="mode-btn" id="btn-oppsett">Tabellposisjon</button>
+      </div>
+      <div class="bracket-scroll">
+        <div class="bracket-canvas" id="bracket-canvas" style="width:${canvasW}px;height:${canvasH}px;">
+          ${colLabels}
+          <svg width="${canvasW}" height="${canvasH}">${svgPaths}</svg>
+          ${matchBoxes}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function initViewToggle(cardViewEl, bracketEl, navLinksEl) {
+    const btnCard = document.getElementById('btn-card');
+    const btnTree = document.getElementById('btn-tree');
+
+    btnCard.addEventListener('click', () => {
+      btnCard.classList.add('active'); btnCard.setAttribute('aria-pressed','true');
+      btnTree.classList.remove('active'); btnTree.setAttribute('aria-pressed','false');
+      cardViewEl.style.display = '';
+      bracketEl.style.display = 'none';
+      navLinksEl.style.display = '';
+    });
+
+    btnTree.addEventListener('click', () => {
+      btnTree.classList.add('active'); btnTree.setAttribute('aria-pressed','true');
+      btnCard.classList.remove('active'); btnCard.setAttribute('aria-pressed','false');
+      cardViewEl.style.display = 'none';
+      bracketEl.style.display = 'block';
+      navLinksEl.style.display = 'none';
+    });
+
+    // Bracket oppsett toggle (delegated — buttons rendered later)
+    document.addEventListener('click', e => {
+      if (e.target.id === 'btn-lagopp') {
+        document.getElementById('btn-lagopp')?.classList.add('active');
+        document.getElementById('btn-oppsett')?.classList.remove('active');
+        document.getElementById('bracket-canvas')?.classList.remove('show-oppsett');
+      } else if (e.target.id === 'btn-oppsett') {
+        document.getElementById('btn-oppsett')?.classList.add('active');
+        document.getElementById('btn-lagopp')?.classList.remove('active');
+        document.getElementById('bracket-canvas')?.classList.add('show-oppsett');
+      }
+    });
+  }
+
+  function showError() {
+    document.getElementById('main').innerHTML = `<div class="state-panel">
+      <h2 class="state-title">Kan ikke laste kampprogram</h2>
+      <p class="state-body">Åpne filene via en lokal webserver.</p>
+      <div class="state-code">python3 -m http.server 8080</div>
+      <p class="state-note">Åpne <strong>http://localhost:8080/vm2026.html</strong></p>
+    </div>`;
   }
 
   async function init() {
     try {
       const res = await fetch('vm2026_kampprogram.csv');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const text = await res.text();
-      const matches = parseCSV(text);
+      const matches = parseCSV(await res.text());
+      const groups  = groupByRound(matches);
+      const rounds  = sortedRounds(groups);
 
-      const groups = groupByRound(matches);
-      const rounds = sortedRounds(groups);
+      const navLinksEl = document.getElementById('round-nav-links');
+      navLinksEl.innerHTML = buildNav(rounds);
 
-      document.getElementById('round-nav').innerHTML = buildNav(rounds);
+      const cardWrapper = document.createElement('div');
+      cardWrapper.id = 'card-view';
+      cardWrapper.innerHTML = buildLadder(rounds, groups) + rounds.map(r => buildSection(r, groups[r])).join('');
 
-      document.getElementById('main').innerHTML =
-        buildLadder(rounds, groups) +
-        rounds.map(r => buildSection(r, groups[r])).join('');
+      const bracketWrapper = document.createElement('div');
+      bracketWrapper.innerHTML = buildBracket(matches);
+      const bracketEl = bracketWrapper.firstElementChild;
+      bracketEl.style.display = 'none';
 
-      // Active nav highlight on scroll
+      const main = document.getElementById('main');
+      main.innerHTML = '';
+      main.appendChild(cardWrapper);
+      main.appendChild(bracketEl);
+
+      initViewToggle(cardWrapper, bracketEl, navLinksEl);
+
+      // Active nav on scroll
       const sections = document.querySelectorAll('.round-section');
-      const links = document.querySelectorAll('.nav-link');
-
+      const links    = document.querySelectorAll('.nav-link');
       const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             const id = entry.target.id;
-            links.forEach(l => {
-              l.classList.toggle('active', l.getAttribute('href') === '#' + id);
-            });
+            links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#'+id));
           }
         });
       }, { threshold: 0.25, rootMargin: '-60px 0px -60% 0px' });
-
       sections.forEach(s => observer.observe(s));
-
-      // Set first nav link active initially
       if (links.length) links[0].classList.add('active');
 
-    } catch (err) {
-      showError(err.message);
-    }
+    } catch (err) { showError(); }
   }
 
   init();
