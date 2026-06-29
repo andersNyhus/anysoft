@@ -1,21 +1,21 @@
 Kamp_nr,Runde,Dato,Tid_lokal,Tid_CEST,Hjemmelag,Bortelag,Stadion,By,Hjemme_oppsett,Borte_Oppsett
-73,Sekstendelsfinale,28.jun.26,12:00,21:00,Nr. 2 gruppe A,Canada,SoFi Stadium,Inglewood,A2,B2
-76,Sekstendelsfinale,29.jun.26,12:00,19:00,Vinner gruppe C,Nr. 2 gruppe F,NRG Stadium,Houston,C1,F2
-74,Sekstendelsfinale,29.jun.26,16:30,22:30,Tyskland,Nr. 3 gruppe A/B/C/D/F,Gillette Stadium,Foxborough,E1,A3/B3/C3/D3/F3
-75,Sekstendelsfinale,29.jun.26,19:00,03:00,Vinner gruppe F,Nr. 2 gruppe C,Estadio BBVA,Guadalupe,F1,C2
-78,Sekstendelsfinale,30.jun.26,12:00,19:00,Nr. 2 gruppe E,Nr. 2 gruppe I,AT&T Stadium,Arlington,E2,I2
-77,Sekstendelsfinale,30.jun.26,17:00,23:00,Vinner gruppe I,Nr. 3 gruppe C/D/F/G/H,MetLife Stadium,East Rutherford,I1,C3/D3/F3/G3/H3
-79,Sekstendelsfinale,30.jun.26,19:00,03:00,Mexico,Nr. 3 gruppe C/E/F/H/I,Estadio Azteca,Mexico by,A1,C3/E3/F3/H3/I3
-80,Sekstendelsfinale,01.jul.26,12:00,18:00,Vinner gruppe L,Nr. 3 gruppe E/H/I/J/K,Mercedes-Benz Stadium,Atlanta,L1,E3/H3/I3/J3/K3
-82,Sekstendelsfinale,01.jul.26,13:00,22:00,Vinner gruppe G,Nr. 3 gruppe A/E/H/I/J,Lumen Field,Seattle,G1,A3/E3/H3/I3/J3
-81,Sekstendelsfinale,01.jul.26,17:00,02:00,USA,Nr. 3 gruppe B/E/F/I/J,Levi's Stadium,Santa Clara,D1,B3/E3/F3/I3/J3
-84,Sekstendelsfinale,02.jul.26,12:00,21:00,Vinner gruppe H,Nr. 2 gruppe J,SoFi Stadium,Inglewood,H1,J2
-83,Sekstendelsfinale,02.jul.26,19:00,01:00,Nr. 2 gruppe K,Nr. 2 gruppe L,BMO Field,Toronto,K2,L2
-85,Sekstendelsfinale,02.jul.26,20:00,05:00,Sveits,Nr. 3 gruppe E/F/G/I/J,BC Place,Vancouver,B1,E3/F3/G3/I3/J3
-88,Sekstendelsfinale,03.jul.26,13:00,20:00,Nr. 2 gruppe D,Nr. 2 gruppe G,AT&T Stadium,Arlington,D2,G2
-86,Sekstendelsfinale,03.jul.26,18:00,00:00,Argentina,Nr. 2 gruppe H,Hard Rock Stadium,Miami Gardens,J1,H2
-87,Sekstendelsfinale,03.jul.26,20:30,03:30,Vinner gruppe K,Nr. 3 gruppe D/E/I/J/L,Arrowhead Stadium,Kansas City,K1,D3/E3/I3/J3/L3
-90,Åttedelsfinale,04.jul.26,12:00,19:00, , ,NRG Stadium,Houston,Vinner kamp 73,Vinner kamp 75
+73,Sekstendelsfinale,28.jun.26,12:00,21:00,Sør-Afrika,Canada,SoFi Stadium,Inglewood,A2,B2
+76,Sekstendelsfinale,29.jun.26,12:00,19:00,Brasil,Japan,NRG Stadium,Houston,C1,F2
+74,Sekstendelsfinale,29.jun.26,16:30,22:30,Tyskland,Paraguay,Gillette Stadium,Foxborough,E1,A3/B3/C3/D3/F3
+75,Sekstendelsfinale,29.jun.26,19:00,03:00,Nederland,Marokko,Estadio BBVA,Guadalupe,F1,C2
+78,Sekstendelsfinale,30.jun.26,12:00,19:00,Elfenbenskysten,Norge,AT&T Stadium,Arlington,E2,I2
+77,Sekstendelsfinale,30.jun.26,17:00,23:00,Frankrike,Sverige,MetLife Stadium,East Rutherford,I1,C3/D3/F3/G3/H3
+79,Sekstendelsfinale,30.jun.26,19:00,03:00,Mexico,Ecuador,Estadio Azteca,Mexico by,A1,C3/E3/F3/H3/I3
+80,Sekstendelsfinale,01.jul.26,12:00,18:00,England,DR Kongo,Mercedes-Benz Stadium,Atlanta,L1,E3/H3/I3/J3/K3
+82,Sekstendelsfinale,01.jul.26,13:00,22:00,Belgia,Senegal,Lumen Field,Seattle,G1,A3/E3/H3/I3/J3
+81,Sekstendelsfinale,01.jul.26,17:00,02:00,USA,Bosnia,Levi's Stadium,Santa Clara,D1,B3/E3/F3/I3/J3
+84,Sekstendelsfinale,02.jul.26,12:00,21:00,Spania,Østerrike,SoFi Stadium,Inglewood,H1,J2
+83,Sekstendelsfinale,02.jul.26,19:00,01:00,Porugal,Kroatia,BMO Field,Toronto,K2,L2
+85,Sekstendelsfinale,02.jul.26,20:00,05:00,Sveits,Algerie,BC Place,Vancouver,B1,E3/F3/G3/I3/J3
+88,Sekstendelsfinale,03.jul.26,13:00,20:00,Australia,Egypt,AT&T Stadium,Arlington,D2,G2
+86,Sekstendelsfinale,03.jul.26,18:00,00:00,Argentina,Kapp Verde,Hard Rock Stadium,Miami Gardens,J1,H2
+87,Sekstendelsfinale,03.jul.26,20:30,03:30,Colombia,Ghana,Arrowhead Stadium,Kansas City,K1,D3/E3/I3/J3/L3
+90,Åttedelsfinale,04.jul.26,12:00,19:00,Canada, ,NRG Stadium,Houston,Vinner kamp 73,Vinner kamp 75
 89,Åttedelsfinale,04.jul.26,17:00,23:00, , ,Lincoln Financial Field,Philadelphia,Vinner kamp 74,Vinner kamp 77
 91,Åttedelsfinale,05.jul.26,16:00,22:00, , ,MetLife Stadium,East Rutherford,Vinner kamp 76,Vinner kamp 78
 92,Åttedelsfinale,05.jul.26,18:00,02:00, , ,Estadio Azteca,Mexico by,Vinner kamp 79,Vinner kamp 80
