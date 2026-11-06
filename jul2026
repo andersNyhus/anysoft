@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Juleøltest</title>
+<style>
+:root{--bg:#1c1514;--card:#2a201e;--line:#40302d;--text:#f6ece4;--muted:#b6a397;--accent:#d4ac4f;--accent-ink:#1c1514;--done:#3f7d5a;--red:#b23a33}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:520px;margin:0 auto;padding:16px 16px 48px}
+h1{font-size:1.7rem;margin:8px 0 4px}
+h2{font-size:1.25rem;margin:4px 0 12px}
+.muted{color:var(--muted);font-size:.95rem}
+input{width:100%;font-size:1.1rem;padding:14px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);margin:12px 0}
+button{font:inherit;cursor:pointer;border:0;border-radius:12px}
+.primary{width:100%;padding:15px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:1.1rem}
+.primary:disabled{opacity:.4}
+.ghost{background:none;color:var(--muted);text-decoration:underline;padding:8px 0}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
+.beer{aspect-ratio:1;background:var(--card);border:1px solid var(--line);color:var(--text);font-size:1.4rem;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.beer small{font-size:.7rem;font-weight:500;color:var(--muted)}
+.beer.done{background:var(--done);border-color:var(--done)}
+.beer.done small{color:#e3f1e8}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0}
+.cat{display:flex;justify-content:space-between;font-weight:600;margin-bottom:8px}
+.cat span{color:var(--accent)}
+.scale{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
+.scale button{height:42px;background:var(--bg);color:var(--text);border:1px solid var(--line);font-weight:600;padding:0}
+.scale button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.total{text-align:center;font-size:1.1rem;margin:14px 0}
+.total b{font-size:1.6rem;color:var(--accent)}
+.res{display:flex;align-items:center;gap:12px}
+.place{font-size:1.4rem;font-weight:800;width:2.2em;text-align:center;color:var(--accent)}
+.res .name{font-weight:700}
+.res .score{margin-left:auto;font-size:1.5rem;font-weight:800}
+.hidden .name,.hidden .score{color:var(--muted)}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.btns button{flex:1;padding:12px;background:var(--card);color:var(--text);border:1px solid var(--line)}
+.btns .primary{flex-basis:100%}
+.banner{background:#3a2a10;border:1px solid #6b5220;color:#f0d9a0;border-radius:10px;padding:8px 12px;font-size:.85rem;margin-bottom:8px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none}
+#toast.show{opacity:1}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<div id="toast"></div>
+<script>
+// ======= INNSTILLINGER =======
+const CONFIG = {
+  SCRIPT_URL: '',            // Lim inn URL-en til Google Apps Script-web-appen her. Tom = demomodus.
+  ANTALL_OL: 20,
+  KATEGORIER: ['Utseende', 'Lukt', 'Smak', 'Helhet']
+};
+// =============================
+
+const $ = s => document.querySelector(s);
+const DEMO = !CONFIG.SCRIPT_URL;
+const mem = {};
+const store = {
+  get(k){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : (mem[k] ?? null); } catch(e){ return mem[k] ?? null; } },
+  set(k,v){ mem[k] = v; try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} },
+  del(k){ delete mem[k]; try { localStorage.removeItem(k); } catch(e){} }
+};
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const newId = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
+let mine = {};          // { ølnr: [4 poeng] }
+let reveal = 0;         // antall avslørte plasser (fra bunnen)
+
+function toast(t){ const el = $('#toast'); el.textContent = t; el.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(()=>el.classList.remove('show'), 1800); }
+function show(html){ $('#app').innerHTML = (DEMO ? '<div class="banner">Demomodus – svar lagres bare på denne enheten.</div>' : '') + html; window.scrollTo(0,0); }
+
+async function api(action, payload = {}){
+  if (DEMO){
+    let all = store.get('jot_demo') || [];
+    if (action === 'save'){
+      all = all.filter(r => !(r.id === payload.id && r.beer === payload.beer));
+      all.push({ id: payload.id, name: payload.name, beer: payload.beer, s: payload.scores });
+      store.set('jot_demo', all); return { ok: true };
+    }
+    if (action === 'mine') return { rows: all.filter(r => r.id === payload.id) };
+    return { rows: all, names: {} };
+  }
+  if (action === 'save'){
+    const r = await fetch(CONFIG.SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload) });
+    const j = await r.json(); if (!j.ok) throw new Error(j.error || 'Feil'); return j;
+  }
+  const u = new URL(CONFIG.SCRIPT_URL);
+  u.searchParams.set('action', action);
+  if (payload.id) u.searchParams.set('id', payload.id);
+  const r = await fetch(u); return r.json();
+}
+
+// ---------- Deltager ----------
+function viewName(){
+  show(`<h1>🍺 Juleøltest</h1>
+    <p class="muted">Skriv navnet ditt. Telefonen husker deg resten av kvelden.</p>
+    <input id="nm" placeholder="Navn" autocomplete="given-name" maxlength="40">
+    <button id="go" class="primary">Start</button>`);
+  const go = () => { const n = $('#nm').value.trim(); if (!n) return; store.set('jot_user', { id: newId(), name: n }); start(); };
+  $('#go').onclick = go;
+  $('#nm').onkeydown = e => { if (e.key === 'Enter') go(); };
+  $('#nm').focus();
+}
+
+async function start(){
+  const u = store.get('jot_user');
+  if (!u) return viewName();
+  viewList();
+  try {
+    const r = await api('mine', { id: u.id });
+    mine = {}; (r.rows || []).forEach(x => mine[x.beer] = x.s);
+    if (!location.hash) viewList();
+  } catch(e){ toast('Fikk ikke hentet tidligere svar'); }
+}
+
+function viewList(){
+  const u = store.get('jot_user');
+  const done = Object.keys(mine).length;
+  let cells = '';
+  for (let i = 1; i <= CONFIG.ANTALL_OL; i++){
+    const s = mine[i];
+    cells += `<button class="beer ${s ? 'done' : ''}" data-n="${i}">${i}${s ? `<small>${s.reduce((a,b)=>a+b,0)} p</small>` : ''}</button>`;
+  }
+  show(`<h1>Hei, ${esc(u.name)} 🎄</h1>
+    <p class="muted">Trykk på nummeret til ølet du har i glasset. ${done} av ${CONFIG.ANTALL_OL} vurdert.</p>
+    <div class="grid">${cells}</div>
+    <button class="ghost" id="swap">Ikke ${esc(u.name)}? Bytt deltager</button>`);
+  document.querySelectorAll('.beer').forEach(b => b.onclick = () => viewRate(+b.dataset.n));
+  $('#swap').onclick = () => { if (confirm('Bytte deltager på denne telefonen?')) { store.del('jot_user'); mine = {}; viewName(); } };
+}
+
+function viewRate(n){
+  const cur = (mine[n] || [0,0,0,0]).slice();
+  const cats = CONFIG.KATEGORIER.map((c,ci) => `
+    <div class="card"><div class="cat">${c}<span id="v${ci}">${cur[ci] || '–'}</span></div>
+    <div class="scale" data-c="${ci}">${Array.from({length:10},(_,k)=>`<button data-v="${k+1}" class="${cur[ci]===k+1?'on':''}">${k+1}</button>`).join('')}</div></div>`).join('');
+  show(`<div class="row"><h2>Øl nr. ${n}</h2><button class="ghost" id="back">Tilbake</button></div>
+    ${cats}
+    <div class="total">Sum: <b id="sum">–</b> / ${CONFIG.KATEGORIER.length * 10}</div>
+    <button id="save" class="primary" disabled>Lagre</button>`);
+  const upd = () => {
+    const ok = cur.every(v => v > 0);
+    $('#sum').textContent = ok ? cur.reduce((a,b)=>a+b,0) : '–';
+    $('#save').disabled = !ok;
+  };
+  document.querySelectorAll('.scale').forEach(sc => sc.onclick = e => {
+    const b = e.target.closest('button'); if (!b) return;
+    const ci = +sc.dataset.c; cur[ci] = +b.dataset.v;
+    sc.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+    $('#v'+ci).textContent = cur[ci]; upd();
+  });
+  $('#back').onclick = viewList;
+  $('#save').onclick = async () => {
+    const u = store.get('jot_user'); const btn = $('#save');
+    btn.disabled = true; btn.textContent = 'Lagrer…';
+    try {
+      await api('save', { id: u.id, name: u.name, beer: n, scores: cur });
+      mine[n] = cur.slice(); toast(`Øl ${n} lagret 🍻`); viewList();
+    } catch(e){ btn.disabled = false; btn.textContent = 'Prøv igjen'; toast('Lagring feilet – sjekk nettet'); }
+  };
+  upd();
+}
+
+// ---------- Resultater (index.html#resultater) ----------
+let resData = null;
+async function viewResults(fetchNew = true){
+  if (fetchNew || !resData){
+    show('<h1>🏆 Resultater</h1><p class="muted">Henter…</p>');
+    try { resData = await api('results'); } catch(e){ show('<h1>🏆 Resultater</h1><p>Klarte ikke å hente resultater.</p><div class="btns"><button id="rf">Prøv igjen</button></div>'); $('#rf').onclick = () => viewResults(); return; }
+  }
+  const rows = resData.rows || [], names = resData.names || {};
+  const K = CONFIG.KATEGORIER.length;
+  const stats = [];
+  for (let b = 1; b <= CONFIG.ANTALL_OL; b++){
+    const rs = rows.filter(r => r.beer === b);
+    if (!rs.length) continue;
+    const avg = Array.from({length:K}, (_,k) => rs.reduce((a,r)=>a + r.s[k], 0) / rs.length);
+    stats.push({ b, n: rs.length, avg, tot: avg.reduce((a,v)=>a+v,0) / K });
+  }
+  stats.sort((a,b) => b.tot - a.tot);
+  const people = new Set(rows.map(r => r.id)).size;
+  reveal = Math.min(reveal, stats.length);
+  const list = stats.map((s,i) => {
+    const hidden = i < stats.length - reveal;
+    const label = names[s.b] ? `${esc(names[s.b])} <span class="muted">(nr. ${s.b})</span>` : `Øl nr. ${s.b}`;
+    return `<div class="card res ${hidden ? 'hidden' : ''}">
+      <div class="place">${i+1}</div>
+      <div><div class="name">${hidden ? '???' : label}</div>
+      ${hidden ? '' : `<div class="muted">${CONFIG.KATEGORIER.map((c,k)=>`${c} ${s.avg[k].toFixed(1)}`).join(' · ')} · ${s.n} stemmer</div>`}</div>
+      <div class="score">${hidden ? '?' : s.tot.toFixed(2)}</div></div>`;
+  }).join('');
+  show(`<h1>🏆 Resultater</h1>
+    <p class="muted">${people} deltagere · ${rows.length} vurderinger · snitt av ${K} kategorier (maks 10)</p>
+    <div class="btns">
+      <button class="primary" id="next" ${reveal >= stats.length ? 'disabled' : ''}>Avslør neste plass</button>
+      <button id="all">Vis alle</button><button id="hide">Skjul alle</button><button id="rf">Oppdater</button>
+    </div>
+    ${list || '<p class="muted">Ingen svar ennå.</p>'}`);
+  $('#next').onclick = () => { reveal++; viewResults(false); };
+  $('#all').onclick = () => { reveal = stats.length; viewResults(false); };
+  $('#hide').onclick = () => { reveal = 0; viewResults(false); };
+  $('#rf').onclick = () => viewResults();
+}
+
+function route(){ location.hash === '#resultater' ? viewResults() : start(); }
+window.addEventListener('hashchange', route);
+route();
+</script>
+</body>
+</html>
