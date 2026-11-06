@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hjorthehaven Juleøltest 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg1:#0b1a17; --bg2:#14080a;
+  --gold:#e8c36a; --gold-soft:#b8964a;
+  --text:#f7efe2; --muted:#c9b9a2;
+  --beer1:#f2a93b; --beer2:#b8620f; --foam:#fff6e0;
+  --glass:#3d2410;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;color:var(--text);font-family:Inter,system-ui,sans-serif;
+  background:radial-gradient(ellipse at 50% -10%,#1f3a2f 0%,var(--bg1) 45%,var(--bg2) 100%)}
+canvas#snow{position:fixed;inset:0;pointer-events:none;z-index:0}
+
+/* Lysslynge */
+.lights{position:fixed;top:0;left:0;right:0;height:5vh;z-index:2;pointer-events:none}
+.lights svg{width:100%;height:100%}
+.bulb{animation:twinkle 2.4s ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* Granbar i hjørnene */
+.pine{position:fixed;bottom:-2vh;width:22vw;max-width:360px;z-index:1;opacity:.55;pointer-events:none}
+.pine.l{left:-4vw}.pine.r{right:-4vw;transform:scaleX(-1)}
+
+main{position:relative;z-index:3;height:100%;display:flex;flex-direction:column;padding:6vh 4vw 3vh}
+header{text-align:center}
+h1{font-family:"Playfair Display",Georgia,serif;font-weight:900;margin:0;letter-spacing:.06em;
+  font-size:clamp(28px,5.2vw,110px);line-height:1;
+  background:linear-gradient(180deg,#fff3c9 0%,var(--gold) 55%,var(--gold-soft) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 4px 18px rgba(232,195,106,.25))}
+.sub{display:flex;justify-content:center;align-items:center;gap:1.2em;margin-top:1.2vh;color:var(--muted);
+  font-size:clamp(12px,1.25vw,26px);letter-spacing:.3em;text-transform:uppercase}
+.sub .star{color:var(--gold)}
+
+.stats{display:flex;justify-content:center;gap:5vw;margin:3vh 0 2vh}
+.stat{text-align:center}
+.stat b{display:block;font-family:"Playfair Display",Georgia,serif;font-weight:900;color:var(--gold);
+  font-size:clamp(28px,4.6vw,96px);line-height:1;font-variant-numeric:tabular-nums}
+.stat span{color:var(--muted);font-size:clamp(11px,1.05vw,22px);letter-spacing:.18em;text-transform:uppercase}
+
+.shelf{flex:1;display:flex;flex-wrap:wrap;align-content:flex-end;justify-content:center;gap:2vh 0;min-height:0;padding-bottom:1vh}
+.p{display:flex;flex-direction:column;align-items:center;min-width:0}
+.p svg{height:var(--bh,28vh);width:auto;overflow:visible;filter:drop-shadow(0 10px 18px rgba(0,0,0,.55))}
+.p .name{margin-top:1vh;font-weight:800;font-size:clamp(12px,1.35vw,28px);max-width:100%;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.p .cnt{color:var(--muted);font-size:clamp(10px,.95vw,20px);font-variant-numeric:tabular-nums}
+.p.done .name{color:var(--gold)}
+.liquid{transition:transform 2.2s cubic-bezier(.3,.7,.2,1)}
+.bub{animation:rise 3.5s linear infinite}
+@keyframes rise{0%{transform:translateY(0);opacity:0}10%{opacity:.8}100%{transform:translateY(-170px);opacity:0}}
+.board-line{position:absolute;left:0;right:0;bottom:2.4vh;height:1.4vh;z-index:-1}
+
+footer{display:flex;justify-content:space-between;color:var(--muted);opacity:.7;font-size:clamp(10px,.8vw,16px);margin-top:1vh}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);font-size:clamp(14px,1.6vw,32px);align-self:center}
+@media (prefers-reduced-motion:reduce){.bulb,.bub{animation:none}.liquid{transition:none}}
+</style>
+</head>
+<body>
+<canvas id="snow"></canvas>
+
+<div class="lights"><svg id="lights" preserveAspectRatio="none" viewBox="0 0 1000 50"></svg></div>
+
+<svg class="pine l" viewBox="0 0 300 300" aria-hidden="true"><g fill="#173d2c">
+  <path d="M0 300 L40 150 L10 160 L60 60 L30 70 L90 -10 L150 70 L120 60 L170 160 L140 150 L180 300Z"/>
+  <path d="M120 300 L170 190 L145 195 L190 120 L165 125 L215 50 L265 125 L240 120 L285 195 L260 190 L300 300Z" fill="#11301f"/></g>
+  <g><circle cx="70" cy="140" r="9" fill="#c0392b"/><circle cx="110" cy="200" r="9" fill="#e8c36a"/><circle cx="220" cy="160" r="8" fill="#c0392b"/><circle cx="60" cy="240" r="8" fill="#e8c36a"/></g></svg>
+<svg class="pine r" viewBox="0 0 300 300" aria-hidden="true"><g fill="#173d2c">
+  <path d="M0 300 L40 150 L10 160 L60 60 L30 70 L90 -10 L150 70 L120 60 L170 160 L140 150 L180 300Z"/>
+  <path d="M120 300 L170 190 L145 195 L190 120 L165 125 L215 50 L265 125 L240 120 L285 195 L260 190 L300 300Z" fill="#11301f"/></g>
+  <g><circle cx="90" cy="120" r="9" fill="#e8c36a"/><circle cx="130" cy="230" r="9" fill="#c0392b"/><circle cx="230" cy="200" r="8" fill="#e8c36a"/></g></svg>
+
+<main>
+  <header>
+    <h1>HJORTHEHAVEN JULEØLTEST 2026</h1>
+    <div class="sub"><span class="star">✦</span>20 øl · 4 kategorier · én vinner<span class="star">✦</span></div>
+  </header>
+  <section class="stats">
+    <div class="stat"><b id="sTotal">0</b><span>øl smakt totalt</span></div>
+    <div class="stat"><b id="sPeople">0</b><span>deltagere</span></div>
+    <div class="stat"><b id="sPct">0 %</b><span>av kvelden unnagjort</span></div>
+  </section>
+  <section class="shelf" id="shelf"><div class="empty">Venter på første smaking …</div></section>
+  <footer><span id="upd">Kobler til …</span><span>Skål og god jul 🍺</span></footer>
+</main>
+
+<script>
+// ======= INNSTILLINGER =======
+const CONFIG = {
+  SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyiD8O0eVQuYBw5e6SKdqFDAQ_Sgi2WvlubYIXv8BYiZYgKoumlojK_wdPojEntVUp-/exec',
+  ANTALL_OL: 20,
+  OPPDATER_SEK: 15
+};
+// =============================
+const DEMO = new URLSearchParams(location.search).has('demo');
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// ---------- Flaske ----------
+// Innvendig fasong (brukes som clip for væsken). viewBox 0 0 100 300.
+const BOTTLE = 'M40 22 L60 22 L60 88 C60 108 84 118 84 145 L84 276 Q84 290 70 290 L30 290 Q16 290 16 276 L16 145 C16 118 40 108 40 88 Z';
+const TOP = 70, BOTTOM = 290;   // full flaske = væske fra y=70 (nede i halsen)
+let uid = 0;
+function bottleSVG(){
+  const id = 'b' + (uid++);
+  let bubbles = '';
+  for (let i = 0; i < 7; i++){
+    const x = 24 + Math.random()*52, y = 250 + Math.random()*35, r = 1.2 + Math.random()*2;
+    bubbles += `<circle class="bub" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="#fff4d0" style="animation-delay:${(Math.random()*3.5).toFixed(2)}s"/>`;
+  }
+  return `<svg viewBox="0 0 100 300" aria-hidden="true">
+    <defs>
+      <clipPath id="${id}c"><path d="${BOTTLE}"/></clipPath>
+      <linearGradient id="${id}g" x1="0" x2="1"><stop offset="0" stop-color="var(--beer2)"/><stop offset=".45" stop-color="var(--beer1)"/><stop offset="1" stop-color="var(--beer2)"/></linearGradient>
+      <linearGradient id="${id}h" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    </defs>
+    <path d="${BOTTLE}" fill="var(--glass)" fill-opacity=".55"/>
+    <g clip-path="url(#${id}c)">
+      <g class="liquid">
+        <rect x="0" y="${TOP}" width="100" height="${BOTTOM-TOP+20}" fill="url(#${id}g)"/>
+        <path d="M0 ${TOP} Q12 ${TOP-6} 25 ${TOP} T50 ${TOP} T75 ${TOP} T100 ${TOP} L100 ${TOP+9} L0 ${TOP+9} Z" fill="var(--foam)"/>
+        <g>${bubbles}</g>
+      </g>
+    </g>
+    <path d="${BOTTLE}" fill="none" stroke="#6b4422" stroke-width="2.2"/>
+    <rect x="22" y="130" width="7" height="140" rx="3.5" fill="url(#${id}h)"/>
+    <rect x="21" y="176" width="58" height="62" rx="5" fill="#f4ead6" stroke="var(--gold-soft)" stroke-width="1.5"/>
+    <rect x="25" y="180" width="50" height="54" rx="3" fill="none" stroke="#b8964a" stroke-width=".8"/>
+    <text class="lbl" x="50" y="205" text-anchor="middle" font-family="Playfair Display,Georgia,serif" font-weight="900" font-size="18" fill="#7a1f1f">0</text>
+    <text x="50" y="222" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700" font-size="8.5" fill="#5a4630" letter-spacing=".5">AV ${CONFIG.ANTALL_OL}</text>
+    <path d="M37 22 L63 22 L65 11 L61 6 L39 6 L35 11 Z" fill="var(--gold)" stroke="#8a6a26" stroke-width="1"/>
+    <path d="M38 11 L62 11" stroke="#8a6a26" stroke-width="1"/>
+  </svg>`;
+}
+
+// ---------- Data ----------
+const people = new Map();   // nøkkel = navn (små bokstaver) -> {name, beers:Set, el}
+let order = [];
+
+async function fetchRows(){
+  if (DEMO) return demoRows();
+  const u = new URL(CONFIG.SCRIPT_URL); u.searchParams.set('action','results'); u.searchParams.set('t', Date.now());
+  const r = await fetch(u); const j = await r.json(); return j.rows || [];
+}
+
+function render(rows){
+  const agg = new Map();
+  rows.forEach(r => {
+    const name = String(r.name || '').trim() || 'Ukjent';
+    const key = name.toLocaleLowerCase('nb');
+    if (!agg.has(key)) agg.set(key, { name, beers: new Set() });
+    agg.get(key).beers.add(Number(r.beer));
+  });
+  agg.forEach((v,k) => { if (!order.includes(k)) order.push(k); });
+  order = order.filter(k => agg.has(k));
+
+  const shelf = $('#shelf');
+  if (!order.length){ shelf.innerHTML = '<div class="empty">Venter på første smaking …</div>'; people.clear(); }
+  else {
+    shelf.querySelector('.empty')?.remove();
+    // fjern de som ikke finnes lenger
+    people.forEach((p,k) => { if (!agg.has(k)){ p.el.remove(); people.delete(k); } });
+    order.forEach(k => {
+      let p = people.get(k);
+      if (!p){
+        const el = document.createElement('div'); el.className = 'p';
+        el.innerHTML = bottleSVG() + '<div class="name"></div><div class="cnt"></div>';
+        shelf.appendChild(el);
+        p = { el }; people.set(k, p);
+        // start full, så den renner ned
+        el.querySelector('.liquid').style.transform = 'translateY(0px)';
+      }
+      const a = agg.get(k), n = Math.min(a.beers.size, CONFIG.ANTALL_OL);
+      p.el.querySelector('.name').textContent = a.name;
+      p.el.querySelector('.cnt').textContent = n >= CONFIG.ANTALL_OL ? 'Tom flaske! 🎉' : `${CONFIG.ANTALL_OL - n} igjen`;
+      p.el.querySelector('.lbl').textContent = n;
+      p.el.classList.toggle('done', n >= CONFIG.ANTALL_OL);
+      const drop = (BOTTOM - TOP) * (n / CONFIG.ANTALL_OL);
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        p.el.querySelector('.liquid').style.transform = `translateY(${drop.toFixed(1)}px)`;
+      }));
+    });
+    layout(order.length);
+  }
+
+  let total = 0; agg.forEach(a => total += Math.min(a.beers.size, CONFIG.ANTALL_OL));
+  const max = agg.size * CONFIG.ANTALL_OL;
+  countTo($('#sTotal'), total);
+  countTo($('#sPeople'), agg.size);
+  $('#sPct').textContent = (max ? Math.round(total / max * 100) : 0) + ' %';
+}
+
+function layout(n){
+  const rows = n <= 8 ? 1 : n <= 18 ? 2 : 3;
+  const cols = Math.ceil(n / rows);
+  const shelf = $('#shelf');
+  const w = Math.min(14, 88/cols).toFixed(1) + 'vw';
+  shelf.style.setProperty('--bh', (rows === 1 ? 40 : rows === 2 ? 22 : 15) + 'vh');
+  shelf.querySelectorAll('.p').forEach(p => { p.style.width = w; p.style.setProperty('--bh', (rows === 1 ? 40 : rows === 2 ? 22 : 15) + 'vh'); });
+}
+
+function countTo(el, to){
+  const from = Number(el.dataset.v || 0); el.dataset.v = to;
+  if (from === to){ el.textContent = to; return; }
+  const t0 = performance.now(), d = 1200;
+  const step = t => { const k = Math.min(1, (t - t0) / d); el.textContent = Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+
+async function tick(){
+  try {
+    render(await fetchRows());
+    $('#upd').textContent = 'Oppdatert ' + new Date().toLocaleTimeString('nb-NO', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+  } catch(e){
+    $('#upd').textContent = 'Får ikke kontakt – prøver igjen …';
+  }
+  setTimeout(tick, CONFIG.OPPDATER_SEK * 1000);
+}
+
+// ---------- Demo (?demo) ----------
+const demoNames = ['Anders','Knut','Kari','Ola','Ingrid','Per','Silje','Morten','Hilde','Jon','Tone','Espen','Line','Geir'];
+const demoState = demoNames.map(() => Math.floor(Math.random() * 14));
+function demoRows(){
+  const rows = [];
+  demoState.forEach((c,i) => { if (Math.random() < .35 && c < CONFIG.ANTALL_OL) demoState[i] = c + 1; });
+  demoNames.forEach((n,i) => { for (let b = 1; b <= demoState[i]; b++) rows.push({ id: 'd'+i, name: n, beer: b, s:[5,5,5,5] }); });
+  return rows;
+}
+
+// ---------- Lysslynge ----------
+(function(){
+  const colors = ['#ff4d4d','#ffd34d','#4dd2ff','#7dff6b','#ff8cf0'];
+  let s = '<path d="M0 6 Q25 24 50 6" fill="none" stroke="#2c3b2c" stroke-width="1.5"/>';
+  let path = 'M0 6';
+  for (let x = 0; x < 1000; x += 50) path += ` Q${x+25} 24 ${x+50} 6`;
+  s = `<path d="${path}" fill="none" stroke="#2b3a2b" stroke-width="1.6"/>`;
+  let i = 0;
+  for (let x = 12; x < 1000; x += 25){
+    const y = 6 + 18 * (1 - Math.pow(((x % 50) - 25) / 25, 2)) * .5 + 2;
+    const c = colors[i % colors.length];
+    s += `<g class="bulb" style="animation-delay:${(i*0.37%2.4).toFixed(2)}s"><circle cx="${x}" cy="${y+8}" r="9" fill="${c}" opacity=".25"/><ellipse cx="${x}" cy="${y+8}" rx="3.2" ry="5" fill="${c}"/></g>`;
+    i++;
+  }
+  $('#lights').innerHTML = s;
+})();
+
+// ---------- Snø ----------
+(function(){
+  const c = $('#snow'), ctx = c.getContext('2d');
+  let W, H, flakes = [];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function size(){ W = c.width = innerWidth; H = c.height = innerHeight;
+    flakes = Array.from({length: Math.round(W * H / 9000)}, () => ({ x: Math.random()*W, y: Math.random()*H, r: .6 + Math.random()*2.4, s: .3 + Math.random()*1.1, w: Math.random()*6.28 })); }
+  function draw(){
+    ctx.clearRect(0,0,W,H); ctx.fillStyle = 'rgba(255,255,255,.75)';
+    flakes.forEach(f => { f.y += f.s; f.w += .01; f.x += Math.sin(f.w) * .4;
+      if (f.y > H + 5){ f.y = -5; f.x = Math.random()*W; }
+      ctx.globalAlpha = .35 + f.r / 4; ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, 6.28); ctx.fill(); });
+    if (!reduce) requestAnimationFrame(draw);
+  }
+  addEventListener('resize', size); size(); draw();
+})();
+
+tick();
+</script>
+</body>
+</html>
