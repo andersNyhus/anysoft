@@ -33,7 +33,7 @@ canvas#snow{position:fixed;inset:0;pointer-events:none;z-index:0}
 main{position:relative;z-index:3;height:100%;display:flex;flex-direction:column;padding:6vh 4vw 3vh}
 header{text-align:center}
 h1{font-family:"Playfair Display",Georgia,serif;font-weight:900;margin:0;letter-spacing:.06em;
-  font-size:clamp(28px,5.2vw,110px);line-height:1;
+  font-size:clamp(26px,4.8vw,104px);line-height:1;
   background:linear-gradient(180deg,#fff3c9 0%,var(--gold) 55%,var(--gold-soft) 100%);
   -webkit-background-clip:text;background-clip:text;color:transparent;
   filter:drop-shadow(0 4px 18px rgba(232,195,106,.25))}
@@ -45,7 +45,8 @@ h1{font-family:"Playfair Display",Georgia,serif;font-weight:900;margin:0;letter-
 .stat{text-align:center}
 .stat b{display:block;font-family:"Playfair Display",Georgia,serif;font-weight:900;color:var(--gold);
   font-size:clamp(28px,4.6vw,96px);line-height:1;font-variant-numeric:tabular-nums}
-.stat span{color:var(--muted);font-size:clamp(11px,1.05vw,22px);letter-spacing:.18em;text-transform:uppercase}
+.stat .of{font-size:.45em;color:var(--muted);margin-left:.15em}
+.stat > span{color:var(--muted);font-size:clamp(11px,1.05vw,22px);letter-spacing:.18em;text-transform:uppercase}
 
 .shelf{flex:1;display:flex;flex-wrap:wrap;align-content:flex-end;justify-content:center;gap:2vh 0;min-height:0;padding-bottom:1vh}
 .p{display:flex;flex-direction:column;align-items:center;min-width:0}
@@ -84,7 +85,7 @@ footer{display:flex;justify-content:space-between;color:var(--muted);opacity:.7;
     <div class="sub"><span class="star">✦</span>20 øl · 4 kategorier · én vinner<span class="star">✦</span></div>
   </header>
   <section class="stats">
-    <div class="stat"><b id="sTotal">0</b><span>øl smakt totalt</span></div>
+    <div class="stat"><b><span id="sTotal">0</span><small class="of">/ 20</small></b><span>øl smakt</span></div>
     <div class="stat"><b id="sPeople">0</b><span>deltagere</span></div>
     <div class="stat"><b id="sPct">0 %</b><span>av kvelden unnagjort</span></div>
   </section>
@@ -191,9 +192,10 @@ function render(rows){
     layout(order.length);
   }
 
-  let total = 0; agg.forEach(a => total += Math.min(a.beers.size, CONFIG.ANTALL_OL));
+  let total = 0, lead = 0;
+  agg.forEach(a => { const n = Math.min(a.beers.size, CONFIG.ANTALL_OL); total += n; lead = Math.max(lead, n); });
   const max = agg.size * CONFIG.ANTALL_OL;
-  countTo($('#sTotal'), total);
+  countTo($('#sTotal'), lead);
   countTo($('#sPeople'), agg.size);
   $('#sPct').textContent = (max ? Math.round(total / max * 100) : 0) + ' %';
 }
