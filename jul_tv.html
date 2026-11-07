@@ -64,7 +64,9 @@ h1{font-family:"Playfair Display",Georgia,serif;font-weight:900;margin:0;letter-
 @keyframes rise{0%{transform:translateY(0);opacity:0}10%{opacity:.8}100%{transform:translateY(-170px);opacity:0}}
 .board-line{position:absolute;left:0;right:0;bottom:2.4vh;height:1.4vh;z-index:-1}
 
-footer{display:flex;justify-content:space-between;color:var(--muted);opacity:.7;font-size:clamp(10px,.8vw,16px);margin-top:1vh}
+footer{display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--muted);opacity:.7;font-size:clamp(10px,.8vw,16px);margin-top:1vh;max-width:calc(100% - 150px)}
+footer > :first-child{margin-right:auto}
+footer > :last-child{text-align:left}
 .empty{grid-column:1/-1;text-align:center;color:var(--muted);font-size:clamp(14px,1.6vw,32px);align-self:center}
 @media (prefers-reduced-motion:reduce){.bulb,.bub{animation:none}.liquid{transition:none}}
 </style>
