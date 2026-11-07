@@ -17,12 +17,18 @@ button{font:inherit;cursor:pointer;border:0;border-radius:12px}
 .primary{width:100%;padding:15px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:1.1rem}
 .primary:disabled{opacity:.4}
 .ghost{background:none;color:var(--muted);text-decoration:underline;padding:8px 0}
+.switch{display:flex;gap:8px;margin:10px 0 16px;background:var(--card);padding:6px;border:1px solid var(--line);border-radius:12px}
+.switch button{flex:1;padding:10px 12px;border-radius:8px;background:transparent;border:0;color:var(--muted);font-weight:700;cursor:pointer}
+.switch button.on{background:var(--accent);color:var(--accent-ink)}
 .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
 .beer{aspect-ratio:1;background:var(--card);border:1px solid var(--line);color:var(--text);font-size:1.4rem;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .beer small{font-size:.7rem;font-weight:500;color:var(--muted)}
 .beer.done{background:var(--done);border-color:var(--done)}
 .beer.done small{color:#e3f1e8}
+.list-panel{display:flex;flex-direction:column;gap:10px;margin:16px 0}
+.list-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--line);background:var(--card);border-radius:12px;color:var(--text);font:inherit;text-align:left;cursor:pointer}
+.list-item strong{color:var(--accent);font-size:1.1rem}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0}
 .cat{display:flex;justify-content:space-between;font-weight:600;margin-bottom:8px}
 .cat .val{color:var(--accent)}
@@ -75,9 +81,13 @@ const score = s => s.reduce((a,v,i)=>a + v*CONFIG.VEKTER[i], 0) / VSUM;   // vek
 const newId = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
 let mine = {};          // { ølnr: [4 poeng] }
 let reveal = 0;         // antall avslørte plasser (fra bunnen)
+let listMode = 'form';
 
 function toast(t){ const el = $('#toast'); el.textContent = t; el.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(()=>el.classList.remove('show'), 1800); }
 function show(html){ $('#app').innerHTML = (DEMO ? '<div class="banner">Demomodus – svar lagres bare på denne enheten.</div>' : '') + html; window.scrollTo(0,0); }
+function renderToggle(active = listMode){
+  return `<div class="switch">${['form','list'].map(mode => `<button type="button" class="${active === mode ? 'on' : ''}" data-mode="${mode}">${mode === 'form' ? 'Skjema' : 'List'}</button>`).join('')}</div>`;
+}
 
 async function api(action, payload = {}){
   if (DEMO){
@@ -125,17 +135,46 @@ async function start(){
 
 function viewList(){
   const u = store.get('jot_user');
+  if (!u) return viewName();
+
+  if (listMode === 'list') {
+    const ranked = Object.entries(mine)
+      .map(([beer, scores]) => ({ beer: Number(beer), score: score(scores) }))
+      .sort((a, b) => b.score - a.score || a.beer - b.beer);
+    const rows = ranked.length ? ranked.map((item, index) => `
+      <button class="list-item" data-beer="${item.beer}" aria-label="Åpne vurdering for Øl ${item.beer}">
+        <span>Øl ${item.beer}</span>
+        <strong>${item.score.toFixed(1)}</strong>
+      </button>
+    `).join('') : '<p class="muted">Du har ikke vurdert noen øl ennå.</p>';
+
+    show(`${renderToggle('list')}<h1>Hei, ${esc(u.name)} 🎄</h1>
+      <p class="muted">Rangert liste over ølene du har vurdert.</p>
+      <div class="list-panel">${rows}</div>
+      <button class="ghost" id="swap">Ikke ${esc(u.name)}? Bytt deltager</button>`);
+
+    document.querySelectorAll('.list-item').forEach(item => item.onclick = () => viewRate(Number(item.dataset.beer)));
+    document.querySelectorAll('.switch button').forEach(button => {
+      button.onclick = () => { listMode = button.dataset.mode; viewList(); };
+    });
+    $('#swap').onclick = () => { if (confirm('Bytte deltager på denne telefonen?')) { store.del('jot_user'); mine = {}; viewName(); } };
+    return;
+  }
+
   const done = Object.keys(mine).length;
   let cells = '';
   for (let i = 1; i <= CONFIG.ANTALL_OL; i++){
     const s = mine[i];
     cells += `<button class="beer ${s ? 'done' : ''}" data-n="${i}">${i}${s ? `<small>${score(s).toFixed(1)}</small>` : ''}</button>`;
   }
-  show(`<h1>Hei, ${esc(u.name)} 🎄</h1>
+  show(`${renderToggle('form')}<h1>Hei, ${esc(u.name)} 🎄</h1>
     <p class="muted">Trykk på nummeret til ølet du har i glasset. ${done} av ${CONFIG.ANTALL_OL} vurdert.</p>
     <div class="grid">${cells}</div>
     <button class="ghost" id="swap">Ikke ${esc(u.name)}? Bytt deltager</button>`);
   document.querySelectorAll('.beer').forEach(b => b.onclick = () => viewRate(+b.dataset.n));
+  document.querySelectorAll('.switch button').forEach(button => {
+    button.onclick = () => { listMode = button.dataset.mode; viewList(); };
+  });
   $('#swap').onclick = () => { if (confirm('Bytte deltager på denne telefonen?')) { store.del('jot_user'); mine = {}; viewName(); } };
 }
 
