@@ -40,6 +40,10 @@ h1{font-family:"Playfair Display",Georgia,serif;font-weight:900;margin:0;letter-
 .sub{display:flex;justify-content:center;align-items:center;gap:1.2em;margin-top:1.2vh;color:var(--muted);
   font-size:clamp(12px,1.25vw,26px);letter-spacing:.3em;text-transform:uppercase}
 .sub .star{color:var(--gold)}
+.qr-tile{position:absolute;right:2vw;bottom:3vh;width:110px;padding:8px 8px 6px;border:1px solid rgba(232,195,106,.35);border-radius:12px;background:rgba(11,26,23,.72);backdrop-filter:blur(6px);box-shadow:0 10px 24px rgba(0,0,0,.2);text-decoration:none;color:var(--text);z-index:4;transition:transform .2s ease, border-color .2s ease}
+.qr-tile:hover{transform:translateY(-2px);border-color:rgba(232,195,106,.7)}
+.qr-tile img{display:block;width:100%;height:auto;border-radius:8px;background:#fff}
+.qr-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:6px}
 
 .stats{display:flex;justify-content:center;gap:5vw;margin:3vh 0 2vh}
 .stat{text-align:center}
@@ -91,6 +95,10 @@ footer{display:flex;justify-content:space-between;color:var(--muted);opacity:.7;
   </section>
   <section class="shelf" id="shelf"><div class="empty">Venter på første smaking …</div></section>
   <footer><span id="upd">Kobler til …</span><span>Skål og god jul 🍺</span></footer>
+  <a class="qr-tile" href="QR-jul.jpg" target="_blank" rel="noopener noreferrer" aria-label="Åpne registreringsskjema">
+    <div class="qr-label">Skjema</div>
+    <img src="QR-jul.jpg" alt="QR-kode for registreringsskjema">
+  </a>
 </main>
 
 <script>
