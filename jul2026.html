@@ -26,9 +26,12 @@ button{font:inherit;cursor:pointer;border:0;border-radius:12px}
 .beer small{font-size:.7rem;font-weight:500;color:var(--muted)}
 .beer.done{background:var(--done);border-color:var(--done)}
 .beer.done small{color:#e3f1e8}
-.list-panel{display:flex;flex-direction:column;gap:10px;margin:16px 0}
-.list-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--line);background:var(--card);border-radius:12px;color:var(--text);font:inherit;text-align:left;cursor:pointer}
+.list-panel,.candidate-panel{display:flex;flex-direction:column;gap:10px;margin:16px 0}
+.list-item,.candidate-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--line);background:var(--card);border-radius:12px;color:var(--text);font:inherit;text-align:left}
+.list-item{cursor:pointer}
 .list-item strong{color:var(--accent);font-size:1.1rem}
+.candidate-item strong{display:block;font-size:1rem}
+.candidate-item small{color:var(--muted);display:block;margin-top:2px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0}
 .cat{display:flex;justify-content:space-between;font-weight:600;margin-bottom:8px}
 .cat .val{color:var(--accent)}
@@ -63,7 +66,33 @@ const CONFIG = {
   SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyiD8O0eVQuYBw5e6SKdqFDAQ_Sgi2WvlubYIXv8BYiZYgKoumlojK_wdPojEntVUp-/exec',            // Lim inn URL-en til Google Apps Script-web-appen her. Tom = demomodus.
   ANTALL_OL: 24,
   KATEGORIER: ['Farge', 'Aroma', 'Smak', 'Ettersmak'],
-  VEKTER:     [1, 1, 2, 1]   // Smak teller dobbelt
+  VEKTER:     [1, 1, 2, 1],  // Smak teller dobbelt
+  KANDIDATER: [
+    { glass: 1, name: 'Nissefar Julebokk' },
+    { glass: 2, name: 'Fjellbryggeriet Vinterlys' },
+    { glass: 3, name: 'Pepperkake Porter' },
+    { glass: 4, name: 'Gløgg & Glede Juleøl' },
+    { glass: 5, name: 'Ribbefett Mørk' },
+    { glass: 6, name: 'Sølvgutt Julepils' },
+    { glass: 7, name: 'Reinsdyr Rød Ale' },
+    { glass: 8, name: 'Kanelstang Ekstra' },
+    { glass: 9, name: 'Midnattsmesse Dobbelbokk' },
+    { glass: 10, name: 'Snøfnugg Lys Juleøl' },
+    { glass: 11, name: 'Bestefars Julebrygg' },
+    { glass: 12, name: 'Tomtegubben Stout' },
+    { glass: 13, name: 'Nordlys Imperial' },
+    { glass: 14, name: 'Juletre Granskudd IPA' },
+    { glass: 15, name: 'Pinnekjøtt Røykøl' },
+    { glass: 16, name: 'Stjernenatt Juleale' },
+    { glass: 17, name: 'Marsipangris Søt Bokk' },
+    { glass: 18, name: 'Kirkeklokke Klosterøl' },
+    { glass: 19, name: 'Vinterfjord Mørk Lager' },
+    { glass: 20, name: 'Lutefisk Lager' },
+    { glass: 21, name: 'Hummlesnurr' },
+    { glass: 22, name: 'Dagfinns' },
+    { glass: 23, name: 'Viking ryger ned' },
+    { glass: 24, name: 'Hjorthefest' }
+  ]
 };
 // =============================
 
@@ -80,13 +109,14 @@ const VSUM = CONFIG.VEKTER.reduce((a,b)=>a+b,0);
 const score = s => s.reduce((a,v,i)=>a + v*CONFIG.VEKTER[i], 0) / VSUM;   // vektet snitt 1–10
 const newId = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
 let mine = {};          // { ølnr: [4 poeng] }
-let reveal = 0;         // antall avslørte plasser (fra bunnen)
 let listMode = 'form';
+let candidateRows = [];
 
 function toast(t){ const el = $('#toast'); el.textContent = t; el.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(()=>el.classList.remove('show'), 1800); }
 function show(html){ $('#app').innerHTML = (DEMO ? '<div class="banner">Demomodus – svar lagres bare på denne enheten.</div>' : '') + html; window.scrollTo(0,0); }
 function renderToggle(active = listMode){
-  return `<div class="switch">${['form','list'].map(mode => `<button type="button" class="${active === mode ? 'on' : ''}" data-mode="${mode}">${mode === 'form' ? 'Skjema' : 'List'}</button>`).join('')}</div>`;
+  const labels = { form: 'Skjema', list: 'List', candidate: 'Kandidater' };
+  return `<div class="switch">${['form','list','candidate'].map(mode => `<button type="button" class="${active === mode ? 'on' : ''}" data-mode="${mode}">${labels[mode]}</button>`).join('')}</div>`;
 }
 
 async function api(action, payload = {}){
@@ -133,9 +163,39 @@ async function start(){
   } catch(e){ toast('Fikk ikke hentet tidligere svar'); }
 }
 
-function viewList(){
+function loadCandidateRows(){
+  if (candidateRows.length) return candidateRows;
+  candidateRows = CONFIG.KANDIDATER.slice().map(item => ({ glass: Number(item.glass), name: String(item.name) }));
+  return candidateRows;
+}
+
+async function viewList(){
   const u = store.get('jot_user');
   if (!u) return viewName();
+
+  if (listMode === 'candidate') {
+    const rowsData = await loadCandidateRows();
+    const rows = rowsData.map(item => `
+      <div class="candidate-item">
+        <div>
+          <strong>${esc(item.name)}</strong>
+          <small>Glass ${item.glass}</small>
+        </div>
+        <span class="muted">${item.glass}</span>
+      </div>
+    `).join('');
+
+    show(`${renderToggle('candidate')}<h1>Hei, ${esc(u.name)} 🎄</h1>
+      <p class="muted">Alle kandidat-øl i testen, sortert etter glassnummer.</p>
+      <div class="candidate-panel">${rows}</div>
+      <button class="ghost" id="swap">Ikke ${esc(u.name)}? Bytt deltager</button>`);
+
+    document.querySelectorAll('.switch button').forEach(button => {
+      button.onclick = () => { listMode = button.dataset.mode; viewList(); };
+    });
+    $('#swap').onclick = () => { if (confirm('Bytte deltager på denne telefonen?')) { store.del('jot_user'); mine = {}; viewName(); } };
+    return;
+  }
 
   if (listMode === 'list') {
     const ranked = Object.entries(mine)
@@ -210,50 +270,7 @@ function viewRate(n){
   upd();
 }
 
-// ---------- Resultater (index.html#resultater) ----------
-let resData = null;
-async function viewResults(fetchNew = true){
-  if (fetchNew || !resData){
-    show('<h1>🏆 Resultater</h1><p class="muted">Henter…</p>');
-    try { resData = await api('results'); } catch(e){ show('<h1>🏆 Resultater</h1><p>Klarte ikke å hente resultater.</p><div class="btns"><button id="rf">Prøv igjen</button></div>'); $('#rf').onclick = () => viewResults(); return; }
-  }
-  const rows = resData.rows || [], names = resData.names || {};
-  const K = CONFIG.KATEGORIER.length;
-  const stats = [];
-  for (let b = 1; b <= CONFIG.ANTALL_OL; b++){
-    const rs = rows.filter(r => r.beer === b);
-    if (!rs.length) continue;
-    const avg = Array.from({length:K}, (_,k) => rs.reduce((a,r)=>a + r.s[k], 0) / rs.length);
-    stats.push({ b, n: rs.length, avg, tot: score(avg) });
-  }
-  stats.sort((a,b) => b.tot - a.tot);
-  const people = new Set(rows.map(r => r.id)).size;
-  reveal = Math.min(reveal, stats.length);
-  const list = stats.map((s,i) => {
-    const hidden = i < stats.length - reveal;
-    const label = names[s.b] ? `${esc(names[s.b])} <span class="muted">(nr. ${s.b})</span>` : `Øl nr. ${s.b}`;
-    return `<div class="card res ${hidden ? 'hidden' : ''}">
-      <div class="place">${i+1}</div>
-      <div><div class="name">${hidden ? '???' : label}</div>
-      ${hidden ? '' : `<div class="muted">${CONFIG.KATEGORIER.map((c,k)=>`${c} ${s.avg[k].toFixed(1)}`).join(' · ')} · ${s.n} stemmer</div>`}</div>
-      <div class="score">${hidden ? '?' : s.tot.toFixed(2)}</div></div>`;
-  }).join('');
-  show(`<h1>🏆 Resultater</h1>
-    <p class="muted">${people} deltagere · ${rows.length} vurderinger · vektet snitt, smak teller dobbelt (maks 10)</p>
-    <div class="btns">
-      <button class="primary" id="next" ${reveal >= stats.length ? 'disabled' : ''}>Avslør neste plass</button>
-      <button id="all">Vis alle</button><button id="hide">Skjul alle</button><button id="rf">Oppdater</button>
-    </div>
-    ${list || '<p class="muted">Ingen svar ennå.</p>'}`);
-  $('#next').onclick = () => { reveal++; viewResults(false); };
-  $('#all').onclick = () => { reveal = stats.length; viewResults(false); };
-  $('#hide').onclick = () => { reveal = 0; viewResults(false); };
-  $('#rf').onclick = () => viewResults();
-}
-
-function route(){ location.hash === '#resultater' ? viewResults() : start(); }
-window.addEventListener('hashchange', route);
-route();
+start();
 </script>
 </body>
 </html>
