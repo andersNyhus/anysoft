@@ -30,8 +30,23 @@ button{font:inherit;cursor:pointer;border:0;border-radius:12px}
 .list-item,.candidate-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--line);background:var(--card);border-radius:12px;color:var(--text);font:inherit;text-align:left}
 .list-item{cursor:pointer}
 .list-item strong{color:var(--accent);font-size:1.1rem}
-.candidate-item strong{display:block;font-size:1rem}
-.candidate-item small{color:var(--muted);display:block;margin-top:2px}
+.candidate-item{cursor:pointer;padding-right:10px}
+.candidate-main{flex:1;min-width:0}
+.candidate-item strong{display:block;font-size:1rem;line-height:1.3}
+.candidate-item small{color:var(--muted);display:block;margin-top:2px;line-height:1.35}
+.candidate-open{width:38px;height:38px;border-radius:10px;background:rgba(212,172,79,.14);color:var(--accent);font-size:1.5rem;line-height:1;border:1px solid rgba(212,172,79,.35);flex-shrink:0}
+.detail-overlay{position:fixed;inset:0;background:rgba(12,9,9,.7);display:flex;align-items:flex-start;justify-content:center;padding:18px;overflow-y:auto;z-index:50}
+.detail-sheet{width:min(100%, 560px);background:var(--bg);border:1px solid var(--line);border-radius:22px;padding:18px 16px 20px;box-shadow:0 18px 60px rgba(0,0,0,.38);margin:20px auto 30px}
+.detail-sheet .row{padding-bottom:8px}
+.detail-sheet .ghost{padding:0 0 0 8px;color:var(--accent)}
+.beer-detail{display:flex;flex-direction:column;gap:16px}
+.beer-detail .image-wrap{background:#231c19;border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;justify-content:center;align-items:center;min-height:220px}
+.beer-detail img{display:block;max-width:100%;max-height:260px;object-fit:contain;background:#fff;padding:8px;border-radius:8px}
+.beer-detail .meta{display:grid;grid-template-columns:1fr;gap:8px}
+.beer-detail .meta-row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.beer-detail .meta-row:last-child{border-bottom:0}
+.beer-detail .meta-row strong{font-size:.9rem;color:var(--muted);font-weight:700}
+.beer-detail .meta-row span{font-weight:600;text-align:right}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0}
 .cat{display:flex;justify-content:space-between;font-weight:600;margin-bottom:8px}
 .cat .val{color:var(--accent)}
@@ -67,37 +82,48 @@ const CONFIG = {
   ANTALL_OL: 24,
   KATEGORIER: ['Farge', 'Aroma', 'Smak', 'Ettersmak'],
   VEKTER:     [1, 1, 2, 1],  // Smak teller dobbelt
-  KANDIDATER: [
-    { glass: 1, name: 'Nissefar Julebokk' },
-    { glass: 2, name: 'Fjellbryggeriet Vinterlys' },
-    { glass: 3, name: 'Pepperkake Porter' },
-    { glass: 4, name: 'Gløgg & Glede Juleøl' },
-    { glass: 5, name: 'Ribbefett Mørk' },
-    { glass: 6, name: 'Sølvgutt Julepils' },
-    { glass: 7, name: 'Reinsdyr Rød Ale' },
-    { glass: 8, name: 'Kanelstang Ekstra' },
-    { glass: 9, name: 'Midnattsmesse Dobbelbokk' },
-    { glass: 10, name: 'Snøfnugg Lys Juleøl' },
-    { glass: 11, name: 'Bestefars Julebrygg' },
-    { glass: 12, name: 'Tomtegubben Stout' },
-    { glass: 13, name: 'Nordlys Imperial' },
-    { glass: 14, name: 'Juletre Granskudd IPA' },
-    { glass: 15, name: 'Pinnekjøtt Røykøl' },
-    { glass: 16, name: 'Stjernenatt Juleale' },
-    { glass: 17, name: 'Marsipangris Søt Bokk' },
-    { glass: 18, name: 'Kirkeklokke Klosterøl' },
-    { glass: 19, name: 'Vinterfjord Mørk Lager' },
-    { glass: 20, name: 'Lutefisk Lager' },
-    { glass: 21, name: 'Hummlesnurr' },
-    { glass: 22, name: 'Dagfinns' },
-    { glass: 23, name: 'Viking ryger ned' },
-    { glass: 24, name: 'Hjorthefest' }
-  ]
+  KANDIDATER: [],  // Kandidater leses fra Google Sheet via api('results').names, ikke fra en lokal liste.
 };
 // =============================
 
 const $ = s => document.querySelector(s);
 const DEMO = !CONFIG.SCRIPT_URL;
+const CANDIDATE_METADATA = {
+  'høkunatt julebock': { name: 'Høkunatt Julebock', producer: 'Rygr Brygghus', style: 'Julebock', abv: '4,7 %', volume: '0,33 l', package: 'boks', image: 'catalog/images/b-rygr-brygghus-hokunatt-julebock.png', note: '2026-utgaven, brygget på norsk malt; passer til tradisjonell julemat.' },
+  'e.c. dahls hovmesteren juleøl': { name: 'E.C. Dahls Hovmesteren Juleøl', producer: 'Ringnes (E.C. Dahls)', style: 'Mørkt belgisk-inspirert juleøl', abv: '4,6 %', volume: '0,75 l', package: 'flaske', image: 'catalog/images/b-ringnes-e-c-dahls-e-c-dahls-hovmesteren-juleol.png', note: 'Brygget med kakaonibs, sviskejuice, appelsinskall og kanel; selges på 0,75 l flaske.' },
+  'mack alkoholfri juleøl': { name: 'Mack Alkoholfri Juleøl', producer: 'Macks Ølbryggeri', style: 'Juleøl', abv: '0,5 %', volume: '0,33 l', package: 'boks', image: 'catalog/images/b-macks-olbryggeri-mack-alkoholfri-juleol.png', note: 'Alkoholfri versjon av Macks klassiske juleøl; server ved 2–6 °C til aperitiff, ost og julemat.' },
+  'nova 6.0': { name: 'Nova 6.0', producer: 'Monkey Brew', style: 'NEIPA', abv: '4,7 %', volume: '0,33 l', package: 'boks', image: 'catalog/images/b-monkey-brew-nova-6-0.jpg', note: 'Bryggeriets årlige jule-NEIPA (sesong: jul); boks.' },
+  'frydenlund juleøl': { name: 'Frydenlund Juleøl', producer: 'Ringnes (Frydenlund)', style: 'Bayer/Mørk lager', abv: '4,5 %', volume: '0,5 l', package: 'boks', image: 'catalog/images/b-ringnes-frydenlund-frydenlund-juleol.png', note: 'Brygget med lakris; passer til ribbe, pinnekjøtt, kalkun og lutefisk, eller nøtter og rosiner.' },
+  'munkholm juleøl': { name: 'Munkholm Juleøl', producer: 'Ringnes (Munkholm)', style: 'Juleøl', abv: '4,7 %', volume: '0,33 l', package: 'boks', image: 'catalog/images/b-ringnes-munkholm-munkholm-juleol.png', note: 'Laget med avbrutt gjæring; serveres ved 3–6 °C til julemat og småkaker.' },
+  'tuftkall': { name: 'Tuftkall', producer: 'Bryggeriet Frøya', style: 'Juleøl, mørk lager', abv: '4,7 %', volume: '0,33 l', package: 'flaske', image: 'catalog/images/b-bryggeriet-froya-tuftkall.jpg', note: 'Klassisk undergjæret juleøl til julematen; allergener: sitrus og bygg.' },
+  'nordlands juleøl': { name: 'Nordlands Juleøl', producer: 'Ringnes (Nordlands)', style: 'Bayer/Mørk lager', abv: '4,5 %', volume: '0,5 l', package: 'boks', image: 'catalog/images/b-ringnes-nordlands-nordlands-juleol.png', note: 'Til ribbe, pinnekjøtt, lutefisk og torsk, eller julekaker, sjokolade og nøtter.' },
+  'lucky jack black xmas ipa': { name: 'Lucky Jack Black Xmas IPA', producer: 'Lervig', style: 'Black IPA', abv: '4,7 %', volume: '0,5 l', package: 'boks', image: 'catalog/images/b-lervig-lucky-jack-black-xmas-ipa.png', note: 'Julevariant av Lucky Jack; vegansk og glutenfri, 50 cl boks.' },
+  'mer jul enn jesus': { name: 'Mer Jul Enn Jesus', producer: '7 Fjell Bryggeri', style: 'Mørk ale', abv: '4,7 %', volume: '0,33 l', package: 'flaske', image: 'catalog/images/b-7-fjell-bryggeri-mer-jul-enn-jesus.png', note: 'Tenkt til eller i stedet for dessert; inneholder laktose og havre.' },
+  'aass juleøl': { name: 'Aass Juleøl', producer: 'Aass Bryggeri', style: 'Mørk lager', abv: '4,7 %', volume: '0,5 l', package: 'boks', image: 'catalog/images/b-aass-bryggeri-aass-juleol.png', note: 'Vann, byggmalt og humle; server ved ca. 9 °C til kraftige, tunge retter.' },
+  'julefred': { name: 'Julefred', producer: 'Kinn Bryggeri', style: 'Skotsk øl', abv: '4,7 %', volume: '0,75 l', package: 'flaske', image: 'catalog/images/b-kinn-bryggeri-julefred.png', note: 'Dagligvareversjonen med grønn etikett, laget til pinnekjøtt; passer også til ribbe.' },
+  'nordstjerna': { name: 'Nordstjerna', producer: 'Hogna Brygg', style: 'Juleøl', abv: '4,7 %', volume: '0,44 l', package: 'boks', image: 'catalog/images/b-hogna-brygg-nordstjerna.png', note: 'Laget for både tradisjonell og moderne julemat; med norsk havre.' },
+  'e.c. dahls lille bjørn juleøl': { name: 'E.C. Dahls Lille Bjørn Juleøl', producer: 'Ringnes (E.C. Dahls)', style: 'Belgisk dubbel-inspirert (session)', abv: '4,6 %', volume: '0,5 l', package: 'boks', image: 'catalog/images/b-ringnes-e-c-dahls-e-c-dahls-lille-bjorn-juleol.png', note: 'Krydret med koriander, fennikel, karve, stjerneanis og appelsinskall; til pinnekjøtt og ribbe.' },
+  'cb juleøl': { name: 'CB Juleøl', producer: 'Hansa Borg Bryggerier', style: 'undergjæret øl', abv: '4,7 %', volume: '0,33 l', package: 'flaske', image: 'catalog/images/b-hansa-borg-bryggerier-cb-juleol.jpg', note: 'Serveres ved 6–10 °C; til lam, svin og fisk, særlig røkelaks.' },
+  'no worries driving home for christmas': { name: 'No Worries Driving Home for Christmas', producer: 'Lervig', style: 'Alkoholfri juleale', abv: '0,5 %', volume: '0,33 l', package: 'boks', image: 'catalog/images/b-lervig-no-worries-driving-home-for-christmas.png', note: 'Brygget med hvete og kanel; vegansk, 33 cl boks.' },
+  'grans juleøl': { name: 'Grans Juleøl', producer: 'Grans Bryggeri', style: 'Juleøl', abv: '4,7 %', volume: '0,5 l', package: 'boks', image: 'catalog/images/b-grans-bryggeri-grans-juleol.png', note: 'Lett humlet og krydret med granskudd; server ved 4–8 °C til vilt, gryter, sjokolade, nøtter og ost.' },
+  'aass bryggerimesterens juleøl': { name: 'Aass Bryggerimesterens Juleøl', producer: 'Aass Bryggeri', style: 'Mørk Ale', abv: '4,7 %', volume: '0,5 l', package: 'boks', image: 'catalog/images/b-aass-bryggeri-aass-bryggerimesterens-juleol.png', note: 'Med havremalt, melasse, appelsin, vanilje og kanel; server ved ca. 9 °C til kraftig mat.' },
+  'mack juleøl 4,5 %': { name: 'Mack Juleøl 4,5 %', producer: 'Macks Ølbryggeri', style: 'Juleøl', abv: '4,5 %', volume: '0,5 l', package: 'boks', image: 'catalog/images/b-macks-olbryggeri-mack-juleol-4-5.png', note: 'Vann, byggmalt og humle; server ved 4–6 °C til koldtbord, lam og svin.' },
+  'tys jol': { name: 'Tys Jol', producer: 'Bryggeriet Frøya', style: 'Brown Ale', abv: '4,7 %', volume: '0,33 l', package: 'flaske', image: 'catalog/images/b-bryggeriet-froya-tys-jol.jpg', note: 'Foreslås til lutefisk med bacon, kjøttgryter, shepherd’s pie og ost.' },
+  'mack vellagret juleøl': { name: 'Mack Vellagret Juleøl', producer: 'Macks Ølbryggeri', style: 'Juleøl', abv: '4,5 %', volume: '0,5 l', package: 'boks', image: 'catalog/images/b-macks-olbryggeri-mack-vellagret-juleol.png', note: 'Ekstra lang lagring; server ved 6–8 °C til pinnekjøtt, ribbe, lam, svin og koldtbord.' },
+  'uten juleøl': { name: 'UTEN Juleøl', producer: 'Aass Bryggeri', style: 'Mørk lager', abv: '0,5 %', volume: '0,5 l', package: 'boks', image: 'catalog/images/b-aass-bryggeri-uten-juleol.png', note: 'Alkoholfritt juleøl laget for god julemat; vann, byggmalt og humle, server ved ca. 9 °C.' },
+  'julestjerne': { name: 'Julestjerne', producer: '7 Fjell Bryggeri', style: 'Lyst belgiskinspirert juleøl', abv: '4,7 %', volume: '0,33 l', package: 'flaske', image: 'catalog/images/b-7-fjell-bryggeri-julestjerne.png', note: 'Med koriander samt appelsin- og mandarinolje; foreslås til kalkun og juletorsk.' },
+  'brukbar-jolagåva': { name: 'Brukbar-Jolagåva', producer: 'Voss Fellesbryggeri', style: 'Jolaøl med kveik', abv: '4,7 %', volume: '0,33 l', package: 'boks', image: 'catalog/images/b-voss-fellesbryggeri-brukbar-jolagaava.png', note: 'Overgjæret med vosskveik og ufiltrert; til all julemat, best ved 6–9 °C.' }
+};
+const normalizeCandidateKey = value => String(value || '')
+  .normalize('NFD')
+  .replace(/[\u0300-\u036f]/g, '')
+  .toLowerCase()
+  .replace(/[^a-z0-9]+/g, ' ')
+  .trim();
+const CANDIDATE_METADATA_LOOKUP = Object.fromEntries(
+  Object.entries(CANDIDATE_METADATA).map(([key, value]) => [normalizeCandidateKey(key), value])
+);
+const getCandidateMeta = name => CANDIDATE_METADATA_LOOKUP[normalizeCandidateKey(name)] || null;
 const mem = {};
 const store = {
   get(k){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : (mem[k] ?? null); } catch(e){ return mem[k] ?? null; } },
@@ -171,10 +197,41 @@ async function start(){
   } catch(e){ toast('Fikk ikke hentet tidligere svar'); }
 }
 
-function loadCandidateRows(){
+async function loadCandidateRows(){
+  if (!DEMO) {
+    try {
+      const res = await api('results');
+      const names = res && res.names ? res.names : {};
+      const liveRows = Object.entries(names)
+        .map(([glass, name]) => ({ glass: Number(glass), name: String(name) }))
+        .filter(item => Number.isFinite(item.glass) && item.glass > 0)
+        .sort((a, b) => a.glass - b.glass);
+      if (liveRows.length) {
+        candidateRows = liveRows;
+        return candidateRows;
+      }
+    } catch (e) {
+      // fallback til lokal liste kun i demomodus; ellers fortsetter vi med siste kjente data
+    }
+  }
+
   if (candidateRows.length) return candidateRows;
-  candidateRows = CONFIG.KANDIDATER.slice().map(item => ({ glass: Number(item.glass), name: String(item.name) }));
+  candidateRows = Object.values(CANDIDATE_METADATA).map((meta, index) => ({
+    glass: index + 1,
+    name: String(meta.name || 'Ukjent øl')
+  }));
   return candidateRows;
+}
+
+function startCandidateAutoRefresh(){
+  if (window.__juleolCandidateRefresh) return;
+  window.__juleolCandidateRefresh = setInterval(async () => {
+    if (listMode !== 'candidate') return;
+    const rows = await loadCandidateRows();
+    if (rows.length && document.querySelector('.candidate-panel')) {
+      viewList();
+    }
+  }, 15000);
 }
 
 async function viewList(){
@@ -183,21 +240,34 @@ async function viewList(){
 
   if (listMode === 'candidate') {
     const rowsData = await loadCandidateRows();
-    const rows = rowsData.map(item => `
-      <div class="candidate-item">
-        <div>
-          <strong>${esc(item.name)}</strong>
-          <small>Glass ${item.glass}</small>
+    const rows = rowsData.map(item => {
+      const meta = getCandidateMeta(item.name);
+      const info = meta ? `${meta.producer} · ${meta.style || 'Juleøl'} · ${meta.abv}` : 'Kandidat';
+      return `
+        <div class="candidate-item" data-name="${esc(item.name)}">
+          <div class="candidate-main">
+            <strong>${esc(item.name)}</strong>
+            <small>${esc(info)}</small>
+          </div>
+          <button type="button" class="candidate-open" data-name="${esc(item.name)}" aria-label="Vis info om ${esc(item.name)}">›</button>
         </div>
-        <span class="muted">${item.glass}</span>
-      </div>
-    `).join('');
+      `;
+    }).join('');
 
     show(`${renderToggle('candidate')}<h1>Hei, ${esc(u.name)} 🎄</h1>
       <p class="muted">Alle kandidat-øl i testen, sortert etter glassnummer.</p>
       <div class="candidate-panel">${rows}</div>
       <button class="ghost" id="swap">Ikke ${esc(u.name)}? Bytt deltager</button>`);
 
+    document.querySelectorAll('.candidate-open').forEach(button => {
+      button.onclick = () => viewCandidateDetail(button.dataset.name);
+    });
+    document.querySelectorAll('.candidate-item').forEach(card => {
+      card.onclick = e => {
+        if (e.target.closest('.candidate-open')) return;
+        viewCandidateDetail(card.dataset.name);
+      };
+    });
     document.querySelectorAll('.switch button').forEach(button => {
       button.onclick = () => { listMode = button.dataset.mode; viewList(); };
     });
@@ -246,6 +316,52 @@ async function viewList(){
   $('#swap').onclick = () => { if (confirm('Bytte deltager på denne telefonen?')) { store.del('jot_user'); mine = {}; viewName(); } };
 }
 
+function viewCandidateDetail(name){
+  const meta = getCandidateMeta(name) || { name: String(name), producer: 'Ukjent brygger', style: 'Juleøl', abv: '–', volume: '–', package: '–', image: '', note: 'Ingen ekstra informasjon tilgjengelig.' };
+  const image = meta.image ? `<img src="${esc(meta.image)}" alt="${esc(meta.name)}">` : '<div class="muted">Bilde ikke tilgjengelig</div>';
+  const rows = [
+    ['Produsent', meta.producer],
+    ['Stil', meta.style || '–'],
+    ['ABV', meta.abv || '–'],
+    ['Volum', meta.volume || '–'],
+    ['Pakke', meta.package || '–']
+  ].map(([label, value]) => `
+    <div class="meta-row">
+      <strong>${esc(label)}</strong>
+      <span>${esc(value)}</span>
+    </div>
+  `).join('');
+
+  const overlay = document.createElement('div');
+  overlay.className = 'detail-overlay';
+  overlay.innerHTML = `
+    <div class="detail-sheet">
+      <div class="row">
+        <h2>${esc(meta.name)}</h2>
+        <button class="ghost" id="detail-back" type="button">Lukk</button>
+      </div>
+      <div class="beer-detail">
+        <div class="image-wrap">${image}</div>
+        <div class="card">
+          <div class="meta">${rows}</div>
+        </div>
+        <div class="card">
+          <h3>Beskrivelse</h3>
+          <p class="muted" style="margin:0">${esc(meta.note || 'Ingen beskrivelse tilgjengelig.')}</p>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const close = () => overlay.remove();
+  overlay.addEventListener('click', (event) => {
+    if (event.target === overlay) close();
+  });
+  const back = overlay.querySelector('#detail-back');
+  if (back) back.onclick = close;
+  document.body.appendChild(overlay);
+}
+
 function viewRate(n){
   const cur = (mine[n] || [0,0,0,0]).slice();
   const cats = CONFIG.KATEGORIER.map((c,ci) => `
@@ -278,6 +394,7 @@ function viewRate(n){
   upd();
 }
 
+startCandidateAutoRefresh();
 start();
 </script>
 </body>
