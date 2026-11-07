@@ -146,7 +146,15 @@ function viewName(){
     <p class="muted">Skriv navnet ditt. Telefonen husker deg resten av kvelden.</p>
     <input id="nm" placeholder="Fornavn" autocomplete="given-name" maxlength="40">
     <button id="go" class="primary">Start</button>`);
-  const go = () => { const n = $('#nm').value.trim(); if (!n) return; store.set('jot_user', { id: newId(), name: n }); start(); };
+  const go = () => {
+    const n = $('#nm').value.trim(); if (!n) return;
+    // Samme navn på samme enhet = samme ID (ikke skille på store/små bokstaver)
+    const ids = store.get('jot_ids') || {};
+    const key = n.toLocaleLowerCase('nb');
+    if (!ids[key]) { ids[key] = newId(); store.set('jot_ids', ids); }
+    store.set('jot_user', { id: ids[key], name: n });
+    start();
+  };
   $('#go').onclick = go;
   $('#nm').onkeydown = e => { if (e.key === 'Enter') go(); };
   $('#nm').focus();
