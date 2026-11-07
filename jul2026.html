@@ -25,7 +25,11 @@ button{font:inherit;cursor:pointer;border:0;border-radius:12px}
 .beer.done small{color:#e3f1e8}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0}
 .cat{display:flex;justify-content:space-between;font-weight:600;margin-bottom:8px}
-.cat span{color:var(--accent)}
+.cat .val{color:var(--accent)}
+.cat em{font-style:normal;font-size:.75rem;font-weight:700;background:var(--accent);color:var(--accent-ink);border-radius:999px;padding:2px 8px;margin-left:6px;vertical-align:2px}
+.card.key{border:2px solid var(--accent);background:#3a2b1c;padding:16px 12px;box-shadow:0 0 0 4px rgba(212,172,79,.12)}
+.card.key .cat{font-size:1.25rem}
+.card.key .scale button{height:50px;font-size:1.05rem}
 .scale{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
 .scale button{height:42px;background:var(--bg);color:var(--text);border:1px solid var(--line);font-weight:600;padding:0}
 .scale button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
@@ -51,8 +55,9 @@ button{font:inherit;cursor:pointer;border:0;border-radius:12px}
 // ======= INNSTILLINGER =======
 const CONFIG = {
   SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyiD8O0eVQuYBw5e6SKdqFDAQ_Sgi2WvlubYIXv8BYiZYgKoumlojK_wdPojEntVUp-/exec',            // Lim inn URL-en til Google Apps Script-web-appen her. Tom = demomodus.
-  ANTALL_OL: 20,
-  KATEGORIER: ['Utseende', 'Lukt', 'Smak', 'Helhet']
+  ANTALL_OL: 24,
+  KATEGORIER: ['Farge', 'Aroma', 'Smak', 'Ettersmak'],
+  VEKTER:     [1, 1, 2, 1]   // Smak teller dobbelt
 };
 // =============================
 
@@ -65,6 +70,8 @@ const store = {
   del(k){ delete mem[k]; try { localStorage.removeItem(k); } catch(e){} }
 };
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const VSUM = CONFIG.VEKTER.reduce((a,b)=>a+b,0);
+const score = s => s.reduce((a,v,i)=>a + v*CONFIG.VEKTER[i], 0) / VSUM;   // vektet snitt 1–10
 const newId = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
 let mine = {};          // { ølnr: [4 poeng] }
 let reveal = 0;         // antall avslørte plasser (fra bunnen)
@@ -97,7 +104,7 @@ async function api(action, payload = {}){
 function viewName(){
   show(`<h1>🍺 Juleøltest</h1>
     <p class="muted">Skriv navnet ditt. Telefonen husker deg resten av kvelden.</p>
-    <input id="nm" placeholder="Navn" autocomplete="given-name" maxlength="40">
+    <input id="nm" placeholder="Fornavn" autocomplete="given-name" maxlength="40">
     <button id="go" class="primary">Start</button>`);
   const go = () => { const n = $('#nm').value.trim(); if (!n) return; store.set('jot_user', { id: newId(), name: n }); start(); };
   $('#go').onclick = go;
@@ -122,7 +129,7 @@ function viewList(){
   let cells = '';
   for (let i = 1; i <= CONFIG.ANTALL_OL; i++){
     const s = mine[i];
-    cells += `<button class="beer ${s ? 'done' : ''}" data-n="${i}">${i}${s ? `<small>${s.reduce((a,b)=>a+b,0)} p</small>` : ''}</button>`;
+    cells += `<button class="beer ${s ? 'done' : ''}" data-n="${i}">${i}${s ? `<small>${score(s).toFixed(1)}</small>` : ''}</button>`;
   }
   show(`<h1>Hei, ${esc(u.name)} 🎄</h1>
     <p class="muted">Trykk på nummeret til ølet du har i glasset. ${done} av ${CONFIG.ANTALL_OL} vurdert.</p>
@@ -135,15 +142,15 @@ function viewList(){
 function viewRate(n){
   const cur = (mine[n] || [0,0,0,0]).slice();
   const cats = CONFIG.KATEGORIER.map((c,ci) => `
-    <div class="card"><div class="cat">${c}<span id="v${ci}">${cur[ci] || '–'}</span></div>
+    <div class="card ${CONFIG.VEKTER[ci] > 1 ? 'key' : ''}"><div class="cat"><span class="cn">${c}${CONFIG.VEKTER[ci] > 1 ? ` <em>teller ×${CONFIG.VEKTER[ci]}</em>` : ''}</span><span id="v${ci}" class="val">${cur[ci] || '–'}</span></div>
     <div class="scale" data-c="${ci}">${Array.from({length:10},(_,k)=>`<button data-v="${k+1}" class="${cur[ci]===k+1?'on':''}">${k+1}</button>`).join('')}</div></div>`).join('');
   show(`<div class="row"><h2>Øl nr. ${n}</h2><button class="ghost" id="back">Tilbake</button></div>
     ${cats}
-    <div class="total">Sum: <b id="sum">–</b> / ${CONFIG.KATEGORIER.length * 10}</div>
+    <div class="total">Din score: <b id="sum">–</b> / 10</div>
     <button id="save" class="primary" disabled>Lagre</button>`);
   const upd = () => {
     const ok = cur.every(v => v > 0);
-    $('#sum').textContent = ok ? cur.reduce((a,b)=>a+b,0) : '–';
+    $('#sum').textContent = ok ? score(cur).toFixed(1) : '–';
     $('#save').disabled = !ok;
   };
   document.querySelectorAll('.scale').forEach(sc => sc.onclick = e => {
@@ -178,7 +185,7 @@ async function viewResults(fetchNew = true){
     const rs = rows.filter(r => r.beer === b);
     if (!rs.length) continue;
     const avg = Array.from({length:K}, (_,k) => rs.reduce((a,r)=>a + r.s[k], 0) / rs.length);
-    stats.push({ b, n: rs.length, avg, tot: avg.reduce((a,v)=>a+v,0) / K });
+    stats.push({ b, n: rs.length, avg, tot: score(avg) });
   }
   stats.sort((a,b) => b.tot - a.tot);
   const people = new Set(rows.map(r => r.id)).size;
@@ -193,7 +200,7 @@ async function viewResults(fetchNew = true){
       <div class="score">${hidden ? '?' : s.tot.toFixed(2)}</div></div>`;
   }).join('');
   show(`<h1>🏆 Resultater</h1>
-    <p class="muted">${people} deltagere · ${rows.length} vurderinger · snitt av ${K} kategorier (maks 10)</p>
+    <p class="muted">${people} deltagere · ${rows.length} vurderinger · vektet snitt, smak teller dobbelt (maks 10)</p>
     <div class="btns">
       <button class="primary" id="next" ${reveal >= stats.length ? 'disabled' : ''}>Avslør neste plass</button>
       <button id="all">Vis alle</button><button id="hide">Skjul alle</button><button id="rf">Oppdater</button>

@@ -97,11 +97,15 @@ footer{display:flex;justify-content:space-between;color:var(--muted);opacity:.7;
 // ======= INNSTILLINGER =======
 const CONFIG = {
   SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyiD8O0eVQuYBw5e6SKdqFDAQ_Sgi2WvlubYIXv8BYiZYgKoumlojK_wdPojEntVUp-/exec',
-  ANTALL_OL: 20,
+  ANTALL_OL: 24,
   OPPDATER_SEK: 15
 };
 // =============================
 const DEMO = new URLSearchParams(location.search).has('demo');
+const subEl = document.querySelector('.sub');
+const totalOfEl = document.querySelector('.of');
+if (subEl) subEl.innerHTML = '<span class="star">✦</span>' + CONFIG.ANTALL_OL + ' øl · 4 kategorier · én vinner<span class="star">✦</span>';
+if (totalOfEl) totalOfEl.textContent = '/ ' + CONFIG.ANTALL_OL;
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
