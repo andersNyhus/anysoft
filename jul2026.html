@@ -187,9 +187,19 @@ function viewName(){
 }
 
 async function start(){
+  if (window.__juleolCandidateRefresh) {
+    clearInterval(window.__juleolCandidateRefresh);
+    window.__juleolCandidateRefresh = null;
+  }
+
   const u = store.get('jot_user');
   if (!u) return viewName();
+
   viewList();
+  preloadCandidateRows().catch(() => {
+    // Kandidatlistene blir forventet å komme fra Google Sheet ved refresh; faller tilbake til siste kjente data.
+  });
+
   try {
     const r = await api('mine', { id: u.id });
     mine = {}; (r.rows || []).forEach(x => mine[x.beer] = x.s);
@@ -223,15 +233,12 @@ async function loadCandidateRows(){
   return candidateRows;
 }
 
-function startCandidateAutoRefresh(){
-  if (window.__juleolCandidateRefresh) return;
-  window.__juleolCandidateRefresh = setInterval(async () => {
-    if (listMode !== 'candidate') return;
-    const rows = await loadCandidateRows();
-    if (rows.length && document.querySelector('.candidate-panel')) {
-      viewList();
-    }
-  }, 15000);
+async function preloadCandidateRows(){
+  const rows = await loadCandidateRows();
+  if (rows.length) {
+    candidateRows = rows;
+  }
+  return candidateRows;
 }
 
 async function viewList(){
@@ -394,7 +401,6 @@ function viewRate(n){
   upd();
 }
 
-startCandidateAutoRefresh();
 start();
 </script>
 </body>
