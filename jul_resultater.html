@@ -51,10 +51,12 @@ main{display:flex;height:100vh;padding:26px 26px 22px;gap:22px}
 .stage-top{display:flex;align-items:flex-end;justify-content:space-between;gap:20px}
 .stage-top h1{margin:0;font-size:clamp(2.2rem,3vw,4rem);letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
 .stage-top .subtitle{color:var(--muted);letter-spacing:.12em;text-transform:uppercase;font-size:12px}
+.stage-controls{display:flex;align-items:center;gap:12px}
 .next-button{
   border:1px solid rgba(233,199,109,.45);background:linear-gradient(180deg,#f1d783,#d7ac38);color:#1b150f;
   border-radius:999px;padding:10px 18px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:11px;cursor:pointer;
 }
+.next-button.secondary{background:rgba(19,27,26,.9);color:var(--text);border-color:var(--line)}
 .next-button:disabled{opacity:.45;cursor:default}
 .block-panel{flex:1;display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:16px;min-height:0;padding-bottom:10px}
 .block-card{display:flex;flex-direction:column;justify-content:flex-end;gap:12px;padding:14px;border-radius:22px;border:1px solid var(--line);background:linear-gradient(180deg,#1b2b29,#101716);box-shadow:0 18px 32px var(--shadow);min-height:260px;cursor:pointer;transition:transform .15s ease, border-color .15s ease}
@@ -95,7 +97,10 @@ main{display:flex;height:100vh;padding:26px 26px 22px;gap:22px}
           <div class="subtitle">Resultater</div>
           <h1 id="stageTitle">Toppliste</h1>
         </div>
-        <button id="nextReveal" class="next-button" type="button">Neste</button>
+        <div class="stage-controls">
+          <button id="previousReveal" class="next-button secondary" type="button">Tilbake</button>
+          <button id="nextReveal" class="next-button" type="button">Neste</button>
+        </div>
       </div>
 
       <div class="block-panel" id="blockPanel"></div>
@@ -185,37 +190,54 @@ main{display:flex;height:100vh;padding:26px 26px 22px;gap:22px}
 
   function getRevealStages(total) {
     const stages = [];
+
     if (total >= 21) {
       stages.push({
-        label: `Plass ${total}–21`,
+        label: `Plass 21–${total}`,
         match: item => item.rank >= 21 && item.rank <= total,
         size: 'small'
       });
     }
-    for (const start of [20, 15, 10]) {
-      if (start > total) continue;
-      const end = start === 10 ? 5 : start - 4;
+
+    const groupedRanges = [
+      [16, 20],
+      [11, 15],
+      [6, 10]
+    ];
+
+    groupedRanges.forEach(([start, end]) => {
+      if (start > total) return;
       stages.push({
         label: `Plass ${start}–${end}`,
-        match: item => item.rank >= end && item.rank <= start,
+        match: item => item.rank >= start && item.rank <= end,
         size: 'small'
       });
-    }
-    [4, 3, 2, 1].forEach(rank => {
-      if (rank <= total) {
-        stages.push({
-          label: `Plass ${rank}`,
-          match: item => item.rank === rank,
-          size: 'large'
-        });
-      }
     });
+
+    if (total >= 5) {
+      [5, 4, 3, 2, 1].forEach(rank => {
+        if (rank <= total) {
+          stages.push({
+            label: `Plass ${rank}`,
+            match: item => item.rank >= rank && item.rank <= 5,
+            size: rank === 5 ? 'small' : 'large'
+          });
+        }
+      });
+    }
+
     return stages;
   }
 
-  function renderRankingList(ranking) {
+  function renderRankingList(ranking, stages, currentIndex) {
     rankList.innerHTML = '';
-    ranking.forEach((item) => {
+    const visible = ranking.filter((item) => {
+      for (let i = 0; i <= currentIndex; i++) {
+        if (stages[i].match(item)) return true;
+      }
+      return false;
+    });
+    visible.forEach((item) => {
       const row = document.createElement('button');
       row.type = 'button';
       row.className = 'rank-item active';
@@ -229,7 +251,7 @@ main{display:flex;height:100vh;padding:26px 26px 22px;gap:22px}
       row.addEventListener('click', () => showBeerDetail(item));
       rankList.appendChild(row);
     });
-    countLabel.textContent = String(ranking.length);
+    countLabel.textContent = String(visible.length);
   }
 
   function getMedalClass(item) {
@@ -309,11 +331,21 @@ main{display:flex;height:100vh;padding:26px 26px 22px;gap:22px}
 
   function renderResults(ranking) {
     const stages = getRevealStages(ranking.length);
+    if (revealState.index < 0) revealState.index = 0;
     if (revealState.index >= stages.length) revealState.index = stages.length - 1;
     const stage = stages[revealState.index] || stages[stages.length - 1];
     stageTitle.textContent = stage.label;
-    renderRankingList(ranking);
+    renderRankingList(ranking, stages, revealState.index);
     renderCurrentBlock(ranking, stage);
+
+    const previousButton = document.getElementById('previousReveal');
+    if (previousButton) {
+      previousButton.disabled = revealState.index === 0;
+      previousButton.onclick = () => {
+        revealState.index = Math.max(0, revealState.index - 1);
+        renderResults(ranking);
+      };
+    }
 
     const nextButton = document.getElementById('nextReveal');
     if (nextButton) {
