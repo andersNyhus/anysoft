@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Juleøltest – Meny</title>
+<style>
+:root {
+  --bg:#0d1513;
+  --bg2:#1a1e1c;
+  --card:#1f2a28;
+  --line:#32463f;
+  --text:#f3ebdf;
+  --muted:#bdc7bb;
+  --gold:#e4c163;
+  --gold-strong:#a87c1a;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:radial-gradient(circle at top,#1c2d2a 0%, var(--bg) 44%, var(--bg2) 100%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+body{display:grid;place-items:center;padding:32px}
+main{width:min(760px,90vw);background:rgba(24,30,28,.82);border:1px solid var(--line);border-radius:24px;padding:32px 24px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+h1{margin:0 0 12px;text-align:center;font-size:clamp(2rem,5vw,4rem);letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+p{margin:0 0 28px;text-align:center;color:var(--muted);font-size:1.05rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.tile{display:flex;align-items:center;justify-content:center;height:180px;border-radius:18px;background:linear-gradient(180deg,#23352f 0%, #17231f 100%);border:1px solid var(--line);color:var(--text);text-decoration:none;font-size:clamp(1.2rem,3vw,2.1rem);font-weight:800;letter-spacing:.08em;text-transform:uppercase;box-shadow:inset 0 0 0 1px rgba(228,193,99,.18), 0 18px 35px rgba(0,0,0,.2);transition:transform .18s ease, border-color .18s ease}
+.tile:hover{transform:translateY(-2px);border-color:rgba(228,193,99,.6)}
+.tile.primary{background:linear-gradient(180deg,#f0d07b 0%, #d7aa3d 100%);color:#1a150f}
+@media (max-width:560px){main{padding:22px 18px}.tile{height:140px}}
+</style>
+</head>
+<body>
+  <main>
+    <h1>Juleøltest</h1>
+    <p>Velg visning</p>
+    <div class="grid">
+      <a class="tile primary" href="jul_tv.html">Stemmer</a>
+      <a class="tile" href="jul_resultater.html">Resultater</a>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Juleøltest – Resultater</title>
+<style>
+:root {
+  --bg:#0e1513;
+  --bg2:#181d1c;
+  --panel:#1a2321;
+  --panel-2:#111918;
+  --line:#2f3b39;
+  --text:#f4efe7;
+  --muted:#b9c1b6;
+  --gold:#e9c76d;
+  --gold-soft:#d9aa32;
+  --silver:#d9e3ec;
+  --bronze:#d9a06c;
+  --card:#1c2927;
+  --shadow:rgba(0,0,0,.36);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:linear-gradient(180deg,#0a1514 0%, #0f1d1a 30%, #111111 100%);color:var(--text);font-family:Segoe UI,Arial,sans-serif}
+body{overflow:hidden}
+a{color:inherit}
+.menu-button {
+  position:fixed;top:18px;right:18px;z-index:30;
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:9px 14px;border-radius:999px;border:1px solid rgba(233,199,109,.5);
+  background:rgba(15,22,24,.3);color:var(--text);text-decoration:none;
+  font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  opacity:.22;transition:opacity .18s ease, transform .18s ease;
+}
+.menu-button:hover{opacity:1;transform:translateY(-1px)}
+main{display:flex;height:100vh;padding:26px 26px 22px;gap:22px}
+.left-rail{
+  width:280px;max-width:28vw;display:flex;flex-direction:column;gap:8px;padding:12px 10px 8px;background:rgba(14,21,19,.7);border:1px solid var(--line);border-radius:18px;box-shadow:inset 0 0 0 1px rgba(233,199,109,.06)
+}
+.left-rail-header{display:flex;align-items:center;justify-content:space-between;padding:4px 8px 8px;border-bottom:1px solid var(--line)}
+.left-rail-header strong{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.left-rail-header span{font-size:12px;color:var(--muted)}
+.rank-list{display:flex;flex-direction:column;gap:6px;overflow:hidden;padding-right:4px}
+.rank-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--line);border-radius:10px;background:linear-gradient(180deg,#1d2a28,#182220);box-shadow:0 8px 18px var(--shadow);min-height:32px}
+.rank-item .place{width:28px;height:28px;border-radius:8px;background:rgba(233,199,109,.12);border:1px solid rgba(233,199,109,.25);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--gold)}
+.rank-item .meta{flex:1;min-width:0}
+.rank-item .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700;font-size:12px}
+.rank-item .points{display:none}
+.rank-item.active{border-color:rgba(233,199,109,.8);background:linear-gradient(180deg,#2a312a,#1a2625)}
+.stage{flex:1;display:flex;flex-direction:column;gap:16px;padding:8px 10px 0}
+.stage-top{display:flex;align-items:flex-end;justify-content:space-between;gap:20px}
+.stage-top h1{margin:0;font-size:clamp(2.2rem,3vw,4rem);letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.stage-top .subtitle{color:var(--muted);letter-spacing:.12em;text-transform:uppercase;font-size:12px}
+.next-button{
+  border:1px solid rgba(233,199,109,.45);background:linear-gradient(180deg,#f1d783,#d7ac38);color:#1b150f;
+  border-radius:999px;padding:10px 18px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:11px;cursor:pointer;
+}
+.next-button:disabled{opacity:.45;cursor:default}
+.block-panel{flex:1;display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:16px;min-height:0;padding-bottom:10px}
+.block-card{display:flex;flex-direction:column;justify-content:flex-end;gap:12px;padding:14px;border-radius:22px;border:1px solid var(--line);background:linear-gradient(180deg,#1b2b29,#101716);box-shadow:0 18px 32px var(--shadow);min-height:260px;cursor:pointer;transition:transform .15s ease, border-color .15s ease}
+.block-card:hover{transform:translateY(-2px);border-color:rgba(233,199,109,.65)}
+.block-card.size-small{min-height:180px;padding:10px}
+.block-card.size-small .beer-name{font-size:1rem;min-height:40px}
+.block-card.size-small .beer-image{min-height:110px}
+.block-card.size-large{min-height:340px;padding:18px}
+.block-card.size-large .beer-name{font-size:clamp(1.5rem,2.3vw,2.4rem);min-height:64px}
+.block-card.size-large .beer-image{min-height:180px}
+.block-card .num{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.block-card .beer-image{display:flex;align-items:center;justify-content:center;min-height:170px;border-radius:16px;background:#0b1917;border:1px solid rgba(233,199,109,.18);overflow:hidden}
+.block-card .beer-image img{display:block;max-width:100%;max-height:150px;object-fit:contain;padding:10px;background:#fff;border-radius:14px}
+.block-card .beer-name{font-size:clamp(1.1rem,1.8vw,2rem);font-weight:800;line-height:1.15;min-height:54px}
+.block-card .beer-meta{font-size:12px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.block-card.medal-gold{border-color:rgba(233,199,109,.85);background:linear-gradient(180deg,#3d3110,#17160d)}
+.block-card.medal-silver{border-color:rgba(217,227,236,.8);background:linear-gradient(180deg,#2f3a45,#141d21)}
+.block-card.medal-bronze{border-color:rgba(217,160,108,.8);background:linear-gradient(180deg,#3a2617,#171312)}
+.block-card.medal-gold .num,.block-card.medal-silver .num,.block-card.medal-bronze .num{color:var(--text)}
+.empty-state{padding:24px;border-radius:18px;border:1px dashed var(--line);color:var(--muted);background:rgba(18,21,18,.4)}
+@media (max-width:980px){main{padding:20px 16px 18px} .left-rail{width:260px}.block-panel{grid-template-columns:repeat(2,minmax(140px,1fr));}}
+</style>
+</head>
+<body>
+  <a class="menu-button" href="jul.html">Meny</a>
+  <main>
+    <aside class="left-rail">
+      <div class="left-rail-header">
+        <strong>Avslørt</strong>
+        <span id="countLabel">0</span>
+      </div>
+      <div class="rank-list" id="rankList"></div>
+    </aside>
+
+    <section class="stage">
+      <div class="stage-top">
+        <div>
+          <div class="subtitle">Resultater</div>
+          <h1 id="stageTitle">Toppliste</h1>
+        </div>
+        <button id="nextReveal" class="next-button" type="button">Neste</button>
+      </div>
+
+      <div class="block-panel" id="blockPanel"></div>
+    </section>
+  </main>
+
+  <script>
+  const CONFIG = {
+    SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyiD8O0eVQuYBw5e6SKdqFDAQ_Sgi2WvlubYIXv8BYiZYgKoumlojK_wdPojEntVUp-/exec',
+    ANTALL_OL: 24,
+    KATEGORIER: ['Farge', 'Aroma', 'Smak', 'Ettersmak']
+  };
+
+  const stageTitle = document.getElementById('stageTitle');
+  const rankList = document.getElementById('rankList');
+  const blockPanel = document.getElementById('blockPanel');
+  const countLabel = document.getElementById('countLabel');
+  const revealState = { index: 0 };
+
+  async function api(action, payload = {}) {
+    const u = new URL(CONFIG.SCRIPT_URL);
+    u.searchParams.set('action', action);
+    if (payload.id) u.searchParams.set('id', payload.id);
+    const r = await fetch(u); return r.json();
+  }
+
+  function normalizeBeerName(name) {
+    return String(name || '').trim();
+  }
+
+  function getBeerMeta(name) {
+    const key = normalizeBeerName(name).toLowerCase();
+    const map = {
+      'høkunatt julebock': { producer: 'Rygr Brygghus', style: 'Julebock', abv: '4,7 %', image: 'catalog/images/b-rygr-brygghus-hokunatt-julebock.png' },
+      'e.c. dahls hovmesteren juleøl': { producer: 'Ringnes (E.C. Dahls)', style: 'Mørkt belgisk-inspirert juleøl', abv: '4,6 %', image: 'catalog/images/b-ringnes-e-c-dahls-e-c-dahls-hovmesteren-juleol.png' },
+      'mack alkoholfri juleøl': { producer: 'Macks Ølbryggeri', style: 'Juleøl', abv: '0,5 %', image: 'catalog/images/b-macks-olbryggeri-mack-alkoholfri-juleol.png' },
+      'nova 6.0': { producer: 'Monkey Brew', style: 'NEIPA', abv: '4,7 %', image: 'catalog/images/b-monkey-brew-nova-6-0.jpg' },
+      'frydenlund juleøl': { producer: 'Ringnes (Frydenlund)', style: 'Bayer/Mørk lager', abv: '4,5 %', image: 'catalog/images/b-ringnes-frydenlund-frydenlund-juleol.png' },
+      'munkholm juleøl': { producer: 'Ringnes (Munkholm)', style: 'Juleøl', abv: '4,7 %', image: 'catalog/images/b-ringnes-munkholm-munkholm-juleol.png' },
+      'tuftkall': { producer: 'Bryggeriet Frøya', style: 'Juleøl, mørk lager', abv: '4,7 %', image: 'catalog/images/b-bryggeriet-froya-tuftkall.jpg' },
+      'nordlands juleøl': { producer: 'Ringnes (Nordlands)', style: 'Bayer/Mørk lager', abv: '4,5 %', image: 'catalog/images/b-ringnes-nordlands-nordlands-juleol.png' },
+      'lucky jack black xmas ipa': { producer: 'Lervig', style: 'Black IPA', abv: '4,7 %', image: 'catalog/images/b-lervig-lucky-jack-black-xmas-ipa.png' },
+      'mer jul enn jesus': { producer: '7 Fjell Bryggeri', style: 'Mørk ale', abv: '4,7 %', image: 'catalog/images/b-7-fjell-bryggeri-mer-jul-enn-jesus.png' },
+      'aass juleøl': { producer: 'Aass Bryggeri', style: 'Mørk lager', abv: '4,7 %', image: 'catalog/images/b-aass-bryggeri-aass-juleol.png' },
+      'julefred': { producer: 'Kinn Bryggeri', style: 'Skotsk øl', abv: '4,7 %', image: 'catalog/images/b-kinn-bryggeri-julefred.png' },
+      'nordstjerna': { producer: 'Hogna Brygg', style: 'Juleøl', abv: '4,7 %', image: 'catalog/images/b-hogna-brygg-nordstjerna.png' },
+      'e.c. dahls lille bjørn juleøl': { producer: 'Ringnes (E.C. Dahls)', style: 'Belgisk dubbel-inspirert (session)', abv: '4,6 %', image: 'catalog/images/b-ringnes-e-c-dahls-e-c-dahls-lille-bjorn-juleol.png' },
+      'cb juleøl': { producer: 'Hansa Borg Bryggerier', style: 'Undergjæret øl', abv: '4,7 %', image: 'catalog/images/b-hansa-borg-bryggerier-cb-juleol.jpg' },
+      'no worries driving home for christmas': { producer: 'Lervig', style: 'Alkoholfri juleale', abv: '0,5 %', image: 'catalog/images/b-lervig-no-worries-driving-home-for-christmas.png' },
+      'grans juleøl': { producer: 'Grans Bryggeri', style: 'Juleøl', abv: '4,7 %', image: 'catalog/images/b-grans-bryggeri-grans-juleol.png' },
+      'aass bryggerimesterens juleøl': { producer: 'Aass Bryggeri', style: 'Mørk Ale', abv: '4,7 %', image: 'catalog/images/b-aass-bryggeri-aass-bryggerimesterens-juleol.png' },
+      'mack juleøl 4,5 %': { producer: 'Macks Ølbryggeri', style: 'Juleøl', abv: '4,5 %', image: 'catalog/images/b-macks-olbryggeri-mack-juleol-4-5.png' },
+      'tys jol': { producer: 'Bryggeriet Frøya', style: 'Brown Ale', abv: '4,7 %', image: 'catalog/images/b-bryggeriet-froya-tys-jol.jpg' },
+      'mack vellagret juleøl': { producer: 'Macks Ølbryggeri', style: 'Juleøl', abv: '4,5 %', image: 'catalog/images/b-macks-olbryggeri-mack-vellagret-juleol.png' },
+      'uten juleøl': { producer: 'Aass Bryggeri', style: 'Mørk lager', abv: '0,5 %', image: 'catalog/images/b-aass-bryggeri-uten-juleol.png' },
+      'julestjerne': { producer: '7 Fjell Bryggeri', style: 'Lyst belgiskinspirert juleøl', abv: '4,7 %', image: 'catalog/images/b-7-fjell-bryggeri-julestjerne.png' },
+      'brukbar-jolagåva': { producer: 'Voss Fellesbryggeri', style: 'Jolaøl med kveik', abv: '4,7 %', image: 'catalog/images/b-voss-fellesbryggeri-brukbar-jolagaava.png' }
+    };
+    return map[key] || { producer: 'Kandidatt', style: 'Juleøl', abv: '-', image: '' };
+  }
+
+  function buildRanking(rows, namesMap) {
+    const byBeer = new Map();
+    rows.forEach(row => {
+      const beer = Number(row.beer);
+      if (!beer) return;
+      if (!byBeer.has(beer)) byBeer.set(beer, { beer, scores: [], name: namesMap[beer] || `Øl ${beer}` });
+      byBeer.get(beer).scores.push(Array.isArray(row.s) ? row.s : [0, 0, 0, 0]);
+    });
+
+    return Array.from(byBeer.values()).map(entry => {
+      const avg = Array.from({ length: 4 }, (_, idx) => {
+        const total = entry.scores.reduce((sum, score) => sum + Number(score[idx] || 0), 0);
+        return entry.scores.length ? total / entry.scores.length : 0;
+      });
+      const total = avg.reduce((sum, val) => sum + val, 0) / 4;
+      return {
+        beer: entry.beer,
+        name: entry.name,
+        total,
+        avg,
+        votes: entry.scores.length,
+        meta: getBeerMeta(entry.name)
+      };
+    }).sort((a, b) => b.total - a.total || a.beer - b.beer).map((item, idx) => ({ ...item, rank: idx + 1 }));
+  }
+
+  function getRevealStages(total) {
+    const stages = [];
+    if (total >= 21) {
+      stages.push({
+        label: `Plass ${total}–21`,
+        match: item => item.rank >= 21 && item.rank <= total,
+        size: 'small'
+      });
+    }
+    for (const start of [20, 15, 10]) {
+      if (start > total) continue;
+      const end = start === 10 ? 5 : start - 4;
+      stages.push({
+        label: `Plass ${start}–${end}`,
+        match: item => item.rank >= end && item.rank <= start,
+        size: 'small'
+      });
+    }
+    [4, 3, 2, 1].forEach(rank => {
+      if (rank <= total) {
+        stages.push({
+          label: `Plass ${rank}`,
+          match: item => item.rank === rank,
+          size: 'large'
+        });
+      }
+    });
+    return stages;
+  }
+
+  function renderRankingList(ranking) {
+    rankList.innerHTML = '';
+    ranking.forEach((item) => {
+      const row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'rank-item active';
+      row.style.cursor = 'pointer';
+      row.innerHTML = `
+        <div class="place">${item.rank}</div>
+        <div class="meta">
+          <div class="name">${item.name}</div>
+        </div>
+      `;
+      row.addEventListener('click', () => showBeerDetail(item));
+      rankList.appendChild(row);
+    });
+    countLabel.textContent = String(ranking.length);
+  }
+
+  function getMedalClass(item) {
+    if (item.rank === 1) return 'medal-gold';
+    if (item.rank === 2) return 'medal-silver';
+    if (item.rank === 3) return 'medal-bronze';
+    return '';
+  }
+
+  function renderCurrentBlock(ranking, stage) {
+    blockPanel.innerHTML = '';
+    const visible = ranking.filter(item => stage.match(item));
+    if (!visible.length) {
+      blockPanel.innerHTML = '<div class="empty-state">Ingen resultater er avslørt ennå.</div>';
+      return;
+    }
+
+    visible.forEach((item) => {
+      const card = document.createElement('div');
+      const sizeClass = stage.size === 'large' ? 'size-large' : 'size-small';
+      card.className = `block-card ${sizeClass} ${getMedalClass(item)}`.trim();
+      const imgSrc = item.meta && item.meta.image ? item.meta.image : '';
+      const rankLabel = item.rank <= 3 ? `Plass ${item.rank}` : `Plass ${item.rank}`;
+      card.innerHTML = `
+        <div class="num">${rankLabel}</div>
+        <div class="beer-image">${imgSrc ? `<img src="${imgSrc}" alt="${item.name}">` : '<div style="color:#b9c1b6;letter-spacing:.1em;text-transform:uppercase;font-size:12px;">Bilde</div>'}</div>
+        <div class="beer-name">${item.name}</div>
+        <div class="beer-meta">${item.meta ? item.meta.style : 'Juleøl'} · ${item.meta ? item.meta.abv : '-'}</div>
+      `;
+      card.addEventListener('click', () => showBeerDetail(item));
+      blockPanel.appendChild(card);
+    });
+  }
+
+  function showBeerDetail(item) {
+    const modal = document.createElement('div');
+    modal.style.position = 'fixed';
+    modal.style.inset = '0';
+    modal.style.background = 'rgba(0,0,0,.68)';
+    modal.style.zIndex = '40';
+    modal.style.display = 'flex';
+    modal.style.alignItems = 'center';
+    modal.style.justifyContent = 'center';
+    modal.style.padding = '20px';
+    modal.innerHTML = `
+      <div style="width:min(520px,100%);background:#101918;border:1px solid var(--line,#2f3b39);border-radius:22px;padding:22px;box-shadow:0 22px 60px rgba(0,0,0,.4);">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;">
+          <div style="font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:#e9c76d;">Plass ${item.rank}</div>
+          <button type="button" style="background:none;border:0;color:#f4efe7;font-size:14px;font-weight:700;cursor:pointer;">Lukk</button>
+        </div>
+        <div style="display:grid;grid-template-columns:140px 1fr;gap:18px;align-items:center;margin-bottom:16px;">
+          <div style="display:flex;align-items:center;justify-content:center;min-height:150px;border-radius:16px;background:#0b1917;border:1px solid rgba(233,199,109,.2);overflow:hidden;">
+            ${item.meta && item.meta.image ? `<img src="${item.meta.image}" alt="${item.name}" style="max-width:100%;max-height:140px;object-fit:contain;background:#fff;padding:8px;border-radius:12px;">` : '<div style="color:#b9c1b6;font-size:12px;letter-spacing:.12em;text-transform:uppercase;">Bilde</div>'}
+          </div>
+          <div>
+            <div style="font-size:clamp(1.4rem,2.5vw,2.2rem);font-weight:800;line-height:1.2;">${item.name}</div>
+            <div style="margin-top:8px;color:#b9c1b6;">${item.meta ? item.meta.producer : 'Kandidat'} · ${item.meta ? item.meta.style : 'Juleøl'} · ${item.meta ? item.meta.abv : '-'}</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(130px,1fr));gap:10px;">
+          <div style="padding:10px 12px;border:1px solid #2f3b39;border-radius:12px;background:#15201f;">
+            <div style="color:#b9c1b6;font-size:11px;letter-spacing:.12em;text-transform:uppercase;">Poeng</div>
+            <div style="font-size:2rem;font-weight:800;color:#e9c76d;">${item.total.toFixed(1)}</div>
+          </div>
+          <div style="padding:10px 12px;border:1px solid #2f3b39;border-radius:12px;background:#15201f;">
+            <div style="color:#b9c1b6;font-size:11px;letter-spacing:.12em;text-transform:uppercase;">Glass</div>
+            <div style="font-size:2rem;font-weight:800;color:#e9c76d;">${item.beer}</div>
+          </div>
+        </div>
+      </div>
+    `;
+    const closeBtn = modal.querySelector('button');
+    closeBtn.addEventListener('click', () => modal.remove());
+    modal.addEventListener('click', (event) => { if (event.target === modal) modal.remove(); });
+    document.body.appendChild(modal);
+  }
+
+  function renderResults(ranking) {
+    const stages = getRevealStages(ranking.length);
+    if (revealState.index >= stages.length) revealState.index = stages.length - 1;
+    const stage = stages[revealState.index] || stages[stages.length - 1];
+    stageTitle.textContent = stage.label;
+    renderRankingList(ranking);
+    renderCurrentBlock(ranking, stage);
+
+    const nextButton = document.getElementById('nextReveal');
+    if (nextButton) {
+      nextButton.disabled = revealState.index >= stages.length - 1;
+      nextButton.textContent = revealState.index >= stages.length - 1 ? 'Ferdig' : 'Neste';
+      nextButton.onclick = () => {
+        if (revealState.index < stages.length - 1) {
+          revealState.index += 1;
+          renderResults(ranking);
+        }
+      };
+    }
+  }
+
+  async function loadResults() {
+    const result = await api('results');
+    const rows = result.rows || [];
+    const names = result.names || {};
+    const ranking = buildRanking(rows, names);
+    renderResults(ranking);
+  }
+
+  loadResults();
+  setInterval(loadResults, 20000);
+  </script>
+</body>
+</html>

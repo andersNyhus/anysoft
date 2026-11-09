@@ -8,6 +8,17 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
+.menu-button {
+  position:fixed;top:16px;right:16px;z-index:10;
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:8px 12px;border-radius:999px;border:1px solid rgba(232,195,106,.4);
+  background:rgba(9,17,18,.24);color:rgba(247,239,226,.08);text-decoration:none;
+  font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:800;
+  opacity:0.08;transition:opacity .18s ease, color .18s ease;
+}
+.menu-button:hover, .menu-button:focus-visible {
+  opacity:1;color:var(--text);background:rgba(9,17,18,.5);
+}
 :root{
   --bg1:#0b1a17; --bg2:#14080a;
   --gold:#e8c36a; --gold-soft:#b8964a;
@@ -72,6 +83,7 @@ footer > :last-child{text-align:left}
 </style>
 </head>
 <body>
+<a class="menu-button" href="jul.html" aria-label="Meny">Meny</a>
 <canvas id="snow"></canvas>
 
 <div class="lights"><svg id="lights" preserveAspectRatio="none" viewBox="0 0 1000 50"></svg></div>
