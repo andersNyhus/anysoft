@@ -91,7 +91,7 @@ main{display:flex;height:100vh;padding:26px 26px 22px;gap:22px}
   <main>
     <aside class="left-rail">
       <div class="left-rail-header">
-        <strong>Avslørt</strong>
+        <strong>Rangering</strong>
         <span id="countLabel">0</span>
       </div>
       <div class="rank-list" id="rankList"></div>
@@ -168,12 +168,24 @@ main{display:flex;height:100vh;padding:26px 26px 22px;gap:22px}
     return map[key] || { producer: 'Kandidatt', style: 'Juleøl', abv: '-', image: '' };
   }
 
-  function buildRanking(rows, namesMap) {
+  function buildRanking(rows, namesMap, glassMap = {}) {
     const byBeer = new Map();
     rows.forEach(row => {
-      const beer = Number(row.beer);
+      const answerGlass = Number(row.glass ?? row.beer);
+      const beerFromGlass = Number.isFinite(answerGlass)
+        ? Number(Object.keys(glassMap).find(key => Number(glassMap[key]) === answerGlass))
+        : NaN;
+      const beer = Number.isFinite(beerFromGlass) ? beerFromGlass : Number(row.beer);
       if (!beer) return;
-      if (!byBeer.has(beer)) byBeer.set(beer, { beer, scores: [], name: namesMap[beer] || `Øl ${beer}` });
+      if (!byBeer.has(beer)) {
+        const glass = Number(glassMap[beer]);
+        byBeer.set(beer, {
+          beer,
+          glass: Number.isFinite(glass) ? glass : (Number.isFinite(answerGlass) ? answerGlass : beer),
+          scores: [],
+          name: namesMap[beer] || `Øl ${beer}`
+        });
+      }
       byBeer.get(beer).scores.push(Array.isArray(row.s) ? row.s : [0, 0, 0, 0]);
     });
 
@@ -182,9 +194,11 @@ main{display:flex;height:100vh;padding:26px 26px 22px;gap:22px}
         const total = entry.scores.reduce((sum, score) => sum + Number(score[idx] || 0), 0);
         return entry.scores.length ? total / entry.scores.length : 0;
       });
-      const total = avg.reduce((sum, val) => sum + val, 0) / 4;
+      const weighted = [avg[0], avg[1], avg[2] * 2, avg[3]];
+      const total = weighted.reduce((sum, val) => sum + val, 0) / 5;
       return {
         beer: entry.beer,
+        glass: entry.glass,
         name: entry.name,
         total,
         avg,
@@ -252,7 +266,7 @@ main{display:flex;height:100vh;padding:26px 26px 22px;gap:22px}
         <div class="place">${item.rank}</div>
         <div class="meta">
           <div class="name">${item.name}</div>
-          <div class="glass-num">${item.rank}</div>
+          <div class="glass-num">${item.glass}</div>
         </div>
       `;
       row.addEventListener('click', () => showBeerDetail(item));
@@ -295,7 +309,7 @@ main{display:flex;height:100vh;padding:26px 26px 22px;gap:22px}
           </div>
           <div class="metric">
             <span>Glass</span>
-            <strong>${item.rank}</strong>
+            <strong>${item.glass}</strong>
           </div>
         </div>
       `;
@@ -336,7 +350,7 @@ main{display:flex;height:100vh;padding:26px 26px 22px;gap:22px}
           </div>
           <div style="padding:10px 12px;border:1px solid #2f3b39;border-radius:12px;background:#15201f;">
             <div style="color:#b9c1b6;font-size:11px;letter-spacing:.12em;text-transform:uppercase;">Glass</div>
-            <div style="font-size:2rem;font-weight:800;color:#e9c76d;">${item.beer}</div>
+            <div style="font-size:2rem;font-weight:800;color:#e9c76d;">${item.glass}</div>
           </div>
         </div>
       </div>
@@ -382,7 +396,8 @@ main{display:flex;height:100vh;padding:26px 26px 22px;gap:22px}
     const result = await api('results');
     const rows = result.rows || [];
     const names = result.names || {};
-    const ranking = buildRanking(rows, names);
+    const glasses = result.glasses || {};
+    const ranking = buildRanking(rows, names, glasses);
     renderResults(ranking);
   }
 

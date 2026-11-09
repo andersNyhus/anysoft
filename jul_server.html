@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Juleøltest – Server</title>
+<style>
+:root {
+  --bg:#0d1513;
+  --bg2:#121d1a;
+  --panel:#1b2422;
+  --line:#2f403d;
+  --text:#f4efe7;
+  --muted:#bcc9c4;
+  --gold:#e7c76c;
+  --gold-dark:#a77c18;
+  --button:#f0d47d;
+  --button-text:#1a160e;
+  --danger:#ff7a7a;
+  --success:#9ae6a3;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:linear-gradient(180deg,#0c1715 0%, #0e1a18 35%, #101111 100%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+body{display:flex;align-items:center;justify-content:center;padding:18px}
+main{width:min(480px,100%);background:rgba(20,27,26,.9);border:1px solid var(--line);border-radius:24px;padding:18px 18px 16px;box-shadow:0 20px 50px rgba(0,0,0,.26)}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.topbar h1{margin:0;font-size:clamp(1.5rem,5vw,2.3rem);letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.menu-link{display:inline-flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:999px;border:1px solid rgba(231,199,108,.45);text-decoration:none;color:var(--text);background:rgba(255,255,255,.02);font-size:11px;letter-spacing:.13em;text-transform:uppercase;font-weight:700}
+.panel{background:rgba(255,255,255,.02);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:14px}
+.label{display:block;margin-bottom:8px;color:var(--muted);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+.beer-list{display:grid;grid-template-columns:1fr;gap:8px;max-height:380px;overflow:auto;padding-right:4px}
+.beer-item{display:flex;align-items:center;gap:10px;width:100%;padding:12px 12px;border-radius:12px;border:1px solid var(--line);background:linear-gradient(180deg,#1e2b29,#141f1d);color:var(--text);text-align:left;cursor:pointer;transition:transform .12s ease, border-color .12s ease, background .12s ease}
+.beer-item:hover{transform:translateY(-1px);border-color:rgba(231,199,108,.7)}
+.beer-item.active{border-color:rgba(231,199,108,.9);background:linear-gradient(180deg,#312d1a,#1c2218)}
+.beer-no{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:rgba(231,199,108,.12);border:1px solid rgba(231,199,108,.3);font-size:14px;font-weight:800;color:var(--gold)}
+.beer-name{flex:1;min-width:0;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.beer-glass{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.inline{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}
+.input-wrap{display:flex;flex-direction:column}
+input{width:100%;padding:13px 12px;border-radius:12px;border:1px solid var(--line);background:#111916;color:var(--text);font-size:1.1rem;font-weight:700}
+input:focus{outline:none;border-color:rgba(231,199,108,.8)}
+button.primary{border:0;border-radius:12px;background:linear-gradient(180deg,var(--button),var(--gold-dark));color:var(--button-text);padding:13px 16px;font-size:14px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
+button.primary:disabled{opacity:.5;cursor:default}
+.status{min-height:22px;margin-top:12px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+.status.error{color:var(--danger)}
+.status.success{color:var(--success)}
+.empty{padding:16px;border-radius:12px;border:1px dashed var(--line);color:var(--muted);text-align:center}
+@media (max-width:420px){main{padding:16px 14px}.topbar{align-items:flex-start}.inline{grid-template-columns:1fr}.button-wrap{width:100%}button.primary{width:100%}}
+</style>
+</head>
+<body>
+  <main>
+    <div class="topbar">
+      <h1>Server</h1>
+      <a class="menu-link" href="jul.html">Meny</a>
+    </div>
+
+    <div class="panel">
+      <div class="label">Valgt øl</div>
+      <div id="selectedBeer" style="font-size:1.05rem;font-weight:800;min-height:24px;">Ingen øl valgt</div>
+    </div>
+
+    <div class="panel">
+      <div class="label">Øl i testen</div>
+      <div id="beerList" class="beer-list"></div>
+    </div>
+
+    <div class="panel">
+      <div class="label">Registrer glassnummer</div>
+      <div class="inline">
+        <div class="input-wrap">
+          <input id="glassInput" type="number" min="1" max="24" step="1" placeholder="Skriv glassnummer" aria-label="Glassnummer">
+        </div>
+        <div class="button-wrap">
+          <button id="saveButton" class="primary" type="button">Registrer</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="status" class="status" aria-live="polite"></div>
+  </main>
+
+  <script>
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyiD8O0eVQuYBw5e6SKdqFDAQ_Sgi2WvlubYIXv8BYiZYgKoumlojK_wdPojEntVUp-/exec';
+  const beerListEl = document.getElementById('beerList');
+  const selectedBeerEl = document.getElementById('selectedBeer');
+  const glassInput = document.getElementById('glassInput');
+  const saveButton = document.getElementById('saveButton');
+  const statusEl = document.getElementById('status');
+
+  let beers = [];
+  let selectedBeer = null;
+
+  function setStatus(message, type = '') {
+    statusEl.textContent = message;
+    statusEl.className = 'status';
+    if (type) statusEl.classList.add(type);
+  }
+
+  async function loadBeers() {
+    try {
+      setStatus('Henter øl...', '');
+      const res = await fetch(`${SCRIPT_URL}?action=beerlist`);
+      const data = await res.json();
+      beers = Array.isArray(data.beers) ? data.beers : [];
+      if (!beers.length) {
+        beerListEl.innerHTML = '<div class="empty">Fant ingen øl i listen</div>';
+        setStatus('Ingen øl funnet', 'error');
+        return;
+      }
+      renderBeerList();
+      setStatus('');
+    } catch (err) {
+      beerListEl.innerHTML = '<div class="empty">Kunne ikke hente øl fra Google Sheet</div>';
+      setStatus('Feil ved henting av data', 'error');
+    }
+  }
+
+  function renderBeerList() {
+    beerListEl.innerHTML = '';
+
+    beers.forEach((beer) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'beer-item' + (selectedBeer === beer.nr ? ' active' : '');
+      const beerName = beer.name && beer.name.trim() ? beer.name : `Øl ${beer.nr}`;
+      button.innerHTML = `
+        <div class="beer-no">#${beer.nr}</div>
+        <div class="beer-name">${beerName}</div>
+        <div class="beer-glass">${beer.glass ? `Glass ${beer.glass}` : 'Ikke registrert'}</div>
+      `;
+      button.addEventListener('click', () => {
+        selectedBeer = beer.nr;
+        glassInput.value = beer.glass ?? '';
+        selectedBeerEl.textContent = `${beer.name}`;
+        renderBeerList();
+      });
+      beerListEl.appendChild(button);
+    });
+
+    if (selectedBeer) {
+      const matched = beers.find((beer) => beer.nr === selectedBeer);
+      if (matched) {
+        selectedBeerEl.textContent = (matched.name && matched.name.trim()) ? matched.name : `Øl ${matched.nr}`;
+      }
+    }
+  }
+
+  async function saveGlassRegistration() {
+    if (!selectedBeer) {
+      setStatus('Velg en øl først', 'error');
+      return;
+    }
+
+    const glass = Number(glassInput.value);
+    if (!Number.isInteger(glass) || glass < 1 || glass > 24) {
+      setStatus('Skriv inn et gyldig glassnummer', 'error');
+      return;
+    }
+
+    try {
+      saveButton.disabled = true;
+      setStatus('Registrerer...', '');
+      const response = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'registerGlass', beer: selectedBeer, glass: glass })
+      });
+
+      const payload = await response.json();
+      if (!payload || !payload.ok) {
+        throw new Error(payload && payload.error ? payload.error : 'Klarte ikke registrere');
+      }
+
+      const idx = beers.findIndex((beer) => beer.nr === selectedBeer);
+      if (idx >= 0) beers[idx].glass = glass;
+      renderBeerList();
+      setStatus(`Glass ${glass} registrert`, 'success');
+    } catch (err) {
+      setStatus(String(err.message || 'Noe gikk galt'), 'error');
+    } finally {
+      saveButton.disabled = false;
+    }
+  }
+
+  saveButton.addEventListener('click', saveGlassRegistration);
+  glassInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') saveGlassRegistration();
+  });
+
+  loadBeers();
+  </script>
+</body>
+</html>
